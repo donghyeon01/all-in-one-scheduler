@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
+
 public class User {
     @Id // 기본 키 Primary key임을 나타냄
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 값 자동생성 auto_increment

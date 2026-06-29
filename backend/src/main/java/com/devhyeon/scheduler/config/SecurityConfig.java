@@ -2,11 +2,15 @@ package com.devhyeon.scheduler.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.devhyeon.scheduler.security.details.CustomUserDetailsService;
+import com.devhyeon.scheduler.security.jwt.JwtFilter;
+import com.devhyeon.scheduler.security.jwt.JwtProvider;
 
 @Configuration
 public class SecurityConfig {
@@ -18,11 +22,16 @@ public class SecurityConfig {
 
 //    보안설정
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http,JwtProvider jwtProvider, CustomUserDetailsService userDetailsService) throws Exception{
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.anyRequest().permitAll() // 어떤 요청이든 권한 허용
-                ).httpBasic(Customizer.withDefaults())
-                .build();
+                        auth.requestMatchers(
+                            "/api/auth/**"
+                    ).permitAll().anyRequest().authenticated() // 어떤 요청이든 권한 허용
+                ).addFilterBefore(
+                    new JwtFilter(jwtProvider, userDetailsService),
+                    UsernamePasswordAuthenticationFilter.class
+            )
+            .build();
     }
 }
