@@ -2,7 +2,7 @@
 
 @theme {
   --color-background: #f8fbff;
-  --color-primary-bg: #f8fafc;
+  --color-primary-bg: #edf4ff;
 
   --color-card: #ffffff;
   --color-card-foreground: #334155;
@@ -12,7 +12,7 @@
 
   --color-primary-dark: #3b568f;
 
-  --color-primary-light: #e8f0ff;
+  --color-primary-light: #e1ecff;
   --color-primary-light-foreground: #334155;
 
   --color-text: #1e2538;
@@ -35,6 +35,4 @@
   --color-border: #dbe7ff;
   --color-input: #dbe7ff;
   --color-ring: #c8dbfe;
-
-  --color-radius: 0.75rem;
 }

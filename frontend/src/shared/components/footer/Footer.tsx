@@ -6,9 +6,9 @@ export const Footer = () => {
         {/* 푸터 상단영역 */}
         <div className="flex justify-between gap-2 max-[768px]:flex-col  text-primary-light-foreground">
           <div className=" items-center">
-            <h2 className="text-lg font-semibold">WhenDo</h2>
+            <h2 className="text-lg font-semibold">SoSo</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Schedule Together, Effortlessly
+              소소하게 비워내는 일상의 틈
             </p>
           </div>
           <div className="flex gap-4 text-sm text-right max-[768px]:text-left">
@@ -26,7 +26,7 @@ export const Footer = () => {
 
         <div className=" border-t border-[#f5f5f5] flex justify-between items-center max-[768px]:flex-col-reverse ">
           <p className=" text-xs text-text-muted">
-            &copy; {new Date().getFullYear()} WhenDo. ALL rights reserved.
+            &copy; {new Date().getFullYear()} SoSo. ALL rights reserved.
           </p>
         </div>
       </div>
