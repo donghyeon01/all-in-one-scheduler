@@ -1,37 +1,56 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { authApi } from "@/shared/api/authApi";
+import { useAuthStore } from "@/app/store/authStore";
+import { useNavigate } from "react-router-dom";
+
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const navigate = useNavigate();
 
-    console.log({
+const login = useAuthStore(
+  (state) => state.login
+);
+
+const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
+
+  try {
+    const response = await authApi.login({
       email,
       password,
     });
 
-    // TODO:
-    // login API 호출
-  };
+    login(response.accessToken);
+
+    navigate("/todo");
+  } catch (error) {
+    console.error("로그인 실패:", error);
+    alert("로그인 실패");
+  }
+};
+
 
   return (
-    <main className="min-h-screen bg-background">
-      <div
-        className="
-        w-full
+    <main className="w-full
         max-w-md
         rounded-3xl
         border
         border-border
         bg-white
         p-8
-        shadow-sm
+        shadow-sm">
+      <div
+        className="
+        
       ">
         <div className="text-center">
-          <h1 className="text-3xl font-bold">Gatherly</h1>
+          <h1 className="text-3xl font-bold">SOSO</h1>
 
           <p className="mt-2 text-muted-foreground">
             로그인 후 일정을 관리해보세요.

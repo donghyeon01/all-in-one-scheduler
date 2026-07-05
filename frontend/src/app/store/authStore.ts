@@ -9,14 +9,14 @@ interface User {
   name: string;
 }
 
-// 현재 로그인 상태 (token , 회원정보, 로그인여부)
+// 현재 로그인 상태 (accessToken , 회원정보, 로그인여부)
 interface AuthState {
-  token: string | null;
+  accessToken: string | null;
   user: User | null;
 
   isAuthenticated: boolean;
 
-  login: (token: string) => void;
+  login: (accessToken: string) => void;
 
   logout: () => void;
 
@@ -25,18 +25,18 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   // localStorage에서 토큰 가져옴
-  token: localStorage.getItem("accessToken"),
+  accessToken: localStorage.getItem("accessToken"),
   user: null,
   // !!-> 뒤의 값이 존재하면 true, 없으면 false로 반환 !-> true,false 상태 변환 JS문법
   isAuthenticated: !!localStorage.getItem("accessToken"),
 
   //  로그인 함수
-  login: (token) => {
+  login: (accessToken) => {
     // 토큰이 존재하면 localStorage에 토큰 저장
-    localStorage.setItem("accessToken", token);
+    localStorage.setItem("accessToken", accessToken);
     set({
       //Zustand 전역 토큰 업뎃, 로그인 상태 true로 변한
-      token,
+      accessToken,
       isAuthenticated: true,
     });
   },
@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem("accessToken");
     // Zustand 전역값 초기화
     set({
-      token: null,
+      accessToken: null,
       user: null,
       isAuthenticated: false,
     });

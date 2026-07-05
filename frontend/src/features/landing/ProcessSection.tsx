@@ -1,3 +1,4 @@
+import { Card } from "@/shared/components/card/LandingCard";
 import { Users, CalendarDays, Sparkles, CheckCircle } from "lucide-react";
 
 const steps = [
@@ -9,7 +10,7 @@ const steps = [
   {
     icon: CalendarDays,
     title: "기간 선택",
-    description: "가능한 날짜 범위를 지정합니다.",
+    description: "약속을 잡고 싶은 날짜 범위를 지정합니다.",
   },
   {
     icon: Sparkles,
@@ -25,10 +26,10 @@ const steps = [
 
 export default function ProcessSection() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-20 border-b-2 border-border">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
-          <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl font-semibold text-slate-700">
+          <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl border-2 font-semibold text-slate-700">
             ⚙️ How It Works
           </span>
 
@@ -40,56 +41,15 @@ export default function ProcessSection() {
         </div>
 
         <div className="mt-16 grid gap-8 lg:grid-cols-4">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-
-            return (
-              <div
-                key={step.title}
-                className="
-                  relative
-                  rounded-3xl
-                  border
-                  border-border
-                  p-8
-                ">
-                <div
-                  className="
-                    absolute
-                    -top-4
-                    left-6
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-primary
-                    font-bold
-                  ">
-                  {index + 1}
-                </div>
-
-                <div
-                  className="
-                    mt-4
-                    flex
-                    h-14
-                    w-14
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-primary-soft
-                  ">
-                  <Icon size={28} />
-                </div>
-
-                <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
-
-                <p className="mt-3 text-muted-foreground">{step.description}</p>
-              </div>
-            );
-          })}
+          {steps.map((step, index) => (
+            <Card
+              key={step.title}
+              title={step.title}
+              description={step.description}
+              icon={step.icon}
+              index={index}
+            />
+          ))}
         </div>
       </div>
     </section>

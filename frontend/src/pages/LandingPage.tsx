@@ -10,22 +10,34 @@ export default function LandingPage() {
     <div className="">
       <main>
         {/* Hero */}
-        <HeroSection />
+        <div id="hero">
+          <HeroSection />
+        </div>
 
         {/* 문제 공감 */}
-        <ProblemSection />
+        <div id="problem">
+          <ProblemSection />
+        </div>
 
         {/* 핵심 기능 */}
-        <FeatureSection />
+        <div id="feature">
+          <FeatureSection />
+        </div>
 
         {/* 서비스 동작 방식 */}
-        <ProcessSection />
+        <div id="process">
+          <ProcessSection />
+        </div>
 
         {/* 추천 일정 예시 */}
-        <ExampleSection />
+        <div id="example">
+          <ExampleSection />
+        </div>
 
         {/* 회원가입 유도 */}
-        <CTASection />
+        <div id="cta">
+          <CTASection />
+        </div>
       </main>
     </div>
   );

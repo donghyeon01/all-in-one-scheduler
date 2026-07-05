@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="border-t border-border bg-white box-border block pt-6 ">
+    <footer className="border-t border-border bg-white box-border block py-10 ">
       {/* gap-4 px-6 py-10 text-center md:flex-row md:items-center md:justify-between md:text-left */}
       <div className="w-full px-5">
         {/* 푸터 상단영역 */}

@@ -21,7 +21,10 @@
   --color-secondary: #dccfff;
   --color-secondary-foreground: #3b1e54;
 
-  --color-milk-white: #faf7ff;
+  --color-milk-white: #fcfbf7;
+  --color-success-muted: #e6f4ea;
+  --color-success-pastel: #cff4d2;
+  --color-success-light: #9bf78f;
 
   --color-accent: #ffd6e7;
   --color-accent-foreground: #334155;
@@ -35,4 +38,6 @@
   --color-border: #dbe7ff;
   --color-input: #dbe7ff;
   --color-ring: #c8dbfe;
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
