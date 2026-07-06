@@ -1,3 +1,4 @@
+import Button from "@/shared/components/button/Button";
 import { ResultCard } from "@/shared/components/card/ResultCard";
 
 const results = [
@@ -26,7 +27,7 @@ const results = [
 
 export default function SchedulingPage() {
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto ">
       <h1 className="mb-8 text-4xl font-bold">일정 조율</h1>
 
       <div className="space-y-5 rounded-2xl border p-6">
@@ -66,15 +67,7 @@ export default function SchedulingPage() {
           </div>
         </div>
 
-        <button
-          className="
-          rounded-xl
-          bg-primary
-          px-5
-          py-3
-        ">
-          추천 시간 찾기
-        </button>
+        <Button>추천 시간 찾기</Button>
       </div>
 
       <div className="mt-8">

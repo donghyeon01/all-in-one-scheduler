@@ -4,7 +4,7 @@ interface Props {
 }
 
 export default function TodoFilter({ current, onChange }: Props) {
-  const filters = ["all", "active", "completed"];
+  const filters = ["전체", "진행 중", "완료"];
 
   return (
     <div className="mb-6 flex gap-2">
@@ -13,11 +13,14 @@ export default function TodoFilter({ current, onChange }: Props) {
           key={filter}
           onClick={() => onChange(filter)}
           className={`
-            rounded-xl
+            rounded-full
             px-4
             py-2
+            border-2
+            font-semibold
+            
 
-            ${current === filter ? "bg-primary text-white" : "border"}
+            ${current === filter ? "bg-success-muted text-black shadow-[1px_1px_0px_0px]" : "font-bold text-primary-dark"}
           `}>
           {filter}
         </button>

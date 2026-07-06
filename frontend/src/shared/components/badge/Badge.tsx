@@ -8,11 +8,11 @@ export default function Badge({ children, variant = "default" }: Props) {
   const variants = {
     default: "bg-slate-100 text-slate-700",
 
-    success: "bg-green-100 text-green-700",
+    success: "bg-success-dark text-success-foreground",
 
-    warning: "bg-yellow-100 text-yellow-700",
+    warning: "bg-warn text-warn-foreground",
 
-    danger: "bg-red-100 text-red-700",
+    danger: "bg-danger text-danger-foreground",
   };
 
   return (

@@ -11,7 +11,7 @@ import TodoFilter from "@/features/todo/components/TodoFilters";
 export default function TodoPage() {
   const [search, setSearch] = useState("");
 
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("전체");
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
@@ -20,9 +20,9 @@ export default function TodoPage() {
         .includes(search.toLowerCase());
 
       const matchesFilter =
-        filter === "all"
+        filter === "전체"
           ? true
-          : filter === "completed"
+          : filter === "완료"
             ? task.completed
             : !task.completed;
 
@@ -32,7 +32,7 @@ export default function TodoPage() {
 
   return (
     <>
-      <PageHeader title="Todo" description="오늘의 할 일을 관리하세요.">
+      <PageHeader title="할 일 관리" description="오늘의 할 일을 관리하세요.">
         <Button>+ 할 일 추가</Button>
       </PageHeader>
 

@@ -24,7 +24,7 @@ export default function TodoItem({ title, completed, dueDate }: Props) {
         {completed ? (
           <Badge variant="success">완료</Badge>
         ) : (
-          <Badge>진행중</Badge>
+          <Badge variant="warning">진행중</Badge>
         )}
       </div>
     </Card>

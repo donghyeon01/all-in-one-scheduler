@@ -45,7 +45,7 @@ export default function EventModal({
 
   return (
     <Modal isOpen={open} title="일정 추가" onClose={onClose}>
-      <div className="space-y-4">
+      <div className="space-y-3 mt-3">
         <Input
           placeholder="제목"
           value={title}

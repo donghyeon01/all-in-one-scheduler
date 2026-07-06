@@ -24,11 +24,15 @@
   --color-milk-white: #fcfbf7;
   --color-success-muted: #e6f4ea;
   --color-success-pastel: #cff4d2;
-  --color-success-light: #9bf78f;
+  --color-success-dark: #9bf78f;
+  --color-success-foreground: #2b6938;
+  --color-success-light: #cff4de;
 
   --color-accent: #ffd6e7;
   --color-accent-foreground: #334155;
   --color-accent-purple: #7b61ff;
+  --color-warn: #ffe5b8;
+  --color-warn-foreground: #86640d;
 
   --color-muted: #eef4ff;
   --color-muted-foreground: #64748b;

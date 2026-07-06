@@ -35,7 +35,7 @@ export default function Modal({
       {/* 2. 실제 모달 콘텐츠 영역 (안쪽 클릭 시 닫히는 현상 방지를 위해 e.stopPropagation 적용) */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
+        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 rounded-3xl border-border bg-white p-8 shadow-md">
         {title && (
           <h2
             className="

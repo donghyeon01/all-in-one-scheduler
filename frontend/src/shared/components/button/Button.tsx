@@ -18,6 +18,7 @@ export default function Button({ children, className = "", ...props }: Props) {
         hover:border-primary-dark
         transition-all duration-200 
         cursor-pointer
+        bg-primary-bg hover:bg-primary
         ${className}
       `}>
       {children}

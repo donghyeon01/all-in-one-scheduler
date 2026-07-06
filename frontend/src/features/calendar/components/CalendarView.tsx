@@ -6,32 +6,26 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 import interactionPlugin from "@fullcalendar/interaction";
 
-import type { CalendarEvent } from "../types/event";
-
 interface Props {
-  events: CalendarEvent[];
-}
+  events: any[];
 
-export default function CalendarView({ events }: Props) {
+  onDateClick: (date: string) => void;
+
+  onEventClick: (event: any) => void;
+}
+export default function CalendarView({
+  events,
+  onDateClick,
+  onEventClick,
+}: Props) {
   return (
-    <div
-      className="
-      rounded-2xl
-      bg-white
-      p-4
-      shadow-sm
-    ">
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        height="80vh"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
-        }}
-        events={events}
-      />
-    </div>
+    <FullCalendar
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      height="80vh"
+      events={events}
+      dateClick={(info) => onDateClick(info.dateStr)}
+      eventClick={(info) => onEventClick(info.event)}
+    />
   );
 }
