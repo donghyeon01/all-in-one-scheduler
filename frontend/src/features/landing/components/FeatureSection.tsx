@@ -1,4 +1,4 @@
-import { Card } from "@/features/landing/components/LandingCard";
+import Card from "@/shared/components/card/Card";
 import { CalendarDays, Users, Bell, CheckSquare } from "lucide-react";
 
 const features = [
@@ -28,29 +28,29 @@ export default function FeatureSection() {
   return (
     <section className="bg-primary-bg py-20 border-b-2 border-border overflow-hidden">
       <div className="mx-auto max-w-7xl px-6">
-        {/* 헤더 생략 */}
+        <div className="text-center">
+          <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl border-2 font-semibold text-slate-700">
+            Features
+          </span>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              // variant="neo"만 붙여주면 랜딩용 카드로 변신!
-              <Card
-                key={feature.title}
-                variant="neo"
-                className="flex flex-col items-center text-center">
-                <div className="mb-4 rounded-2xl bg-primary p-4 border-2 border-text shadow-[3px_3px_0px_0px_#1e2538]">
-                  <Icon className="h-6 w-6 text-text" />
-                </div>
-                <h3 className="text-xl font-black text-text">
-                  {feature.title}
-                </h3>
-                <p className="mt-3 text-sm font-bold text-text-gray leading-relaxed">
-                  {feature.description}
-                </p>
-              </Card>
-            );
-          })}
+          <h2 className="mt-6 text-3xl sm:text-4xl font-black text-text">
+            일정 관리부터 조율까지 한 방에!
+          </h2>
+
+          <p className="mt-4 font-medium text-text-gray max-w-xl mx-auto">
+            SOSO가 제공하는 퐁신하고 스마트한 기능들로 모임 준비가 즐거워집니다.
+          </p>
+        </div>
+        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature) => (
+            <Card
+              key={feature.title}
+              variant="landing" // variant 추가!
+              title={feature.title}
+              description={feature.description}
+              icon={feature.icon}
+            />
+          ))}
         </div>
       </div>
     </section>

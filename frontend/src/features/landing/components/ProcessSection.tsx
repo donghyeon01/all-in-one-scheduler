@@ -1,4 +1,4 @@
-import { Card } from "@/features/landing/components/LandingCard";
+import Card from "@/shared/components/card/Card";
 import { Users, CalendarDays, Sparkles, CheckCircle } from "lucide-react";
 
 const steps = [
@@ -40,14 +40,15 @@ export default function ProcessSection() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-4">
+        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, index) => (
             <Card
               key={step.title}
+              variant="landing" // variant 추가!
+              index={index} // 기존 인덱스 그대로 전달
               title={step.title}
               description={step.description}
               icon={step.icon}
-              index={index}
             />
           ))}
         </div>

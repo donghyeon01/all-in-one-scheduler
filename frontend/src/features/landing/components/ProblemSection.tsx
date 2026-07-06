@@ -1,4 +1,4 @@
-import { Card } from "@/features/landing/components/LandingCard";
+import Card from "@/shared/components/card/Card";
 import { CalendarDays, Users, MessageCircle, BookOpen } from "lucide-react";
 
 const problems = [
@@ -55,6 +55,7 @@ export default function ProblemSection() {
           {problems.map((problem) => (
             <Card
               key={problem.title}
+              variant="landing" // variant 추가!
               title={problem.title}
               description={problem.description}
               icon={problem.icon}
