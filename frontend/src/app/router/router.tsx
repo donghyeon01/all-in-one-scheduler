@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import { AuthLayout } from "@/layouts/AuthLayout";
-import LoginForm from "@/features/auth/LoginForm";
-import SignupForm from "@/features/auth/SignupForm";
+import LoginForm from "@/features/auth/components/LoginForm";
+import SignupForm from "@/features/auth/components/SignupForm";
 import TodoPage from "@/pages/TodoPage";
 import CalendarPage from "@/pages/CalendarPage";
 import FriendsPage from "@/pages/FriendsPage";

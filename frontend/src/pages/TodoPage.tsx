@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import TodoItem from "@/features/todo/components/TodoItem";
 import TodoStats from "@/features/todo/components/TodoStats";
-import { tasks as mockTasks } from "@/features/todo/mock/tasks";
+import { tasks as mockTasks } from "@/features/todo/api/tasks";
 import PageHeader from "@/shared/components/header/PageHeader";
-import Button from "@/shared/components/button/Button";
+import Button from "@/shared/components/ui/Button";
 import DdayCard from "@/shared/components/card/DdayCard";
-import Input from "@/shared/components/input/Input";
+import Input from "@/shared/components/ui/Input";
 import TodoFilter from "@/features/todo/components/TodoFilters";
 import EmptyState from "@/shared/components/state/EmptyState";
 

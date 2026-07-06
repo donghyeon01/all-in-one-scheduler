@@ -1,5 +1,5 @@
-import Button from "@/shared/components/button/Button";
-import Input from "@/shared/components/input/Input";
+import Button from "@/shared/components/ui/Button";
+import Input from "@/shared/components/ui/Input";
 import Modal from "@/shared/components/modal/Modal";
 import { useState } from "react";
 

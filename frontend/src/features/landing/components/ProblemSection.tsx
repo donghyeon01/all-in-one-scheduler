@@ -1,4 +1,4 @@
-import { Card } from "@/shared/components/card/LandingCard";
+import { Card } from "@/features/landing/components/LandingCard";
 import { CalendarDays, Users, MessageCircle, BookOpen } from "lucide-react";
 
 const problems = [
@@ -11,8 +11,7 @@ const problems = [
   {
     icon: Users,
     title: "팀 프로젝트 회의",
-    description:
-      "팀원 시간 일일이 취합하다가 회의는커녕 약속 잡다 지쳐요.",
+    description: "팀원 시간 일일이 취합하다가 회의는커녕 약속 잡다 지쳐요.",
   },
   {
     icon: BookOpen,
@@ -58,7 +57,7 @@ export default function ProblemSection() {
               key={problem.title}
               title={problem.title}
               description={problem.description}
-              icon={problem.icon} 
+              icon={problem.icon}
             />
           ))}
         </div>
@@ -78,4 +77,3 @@ export default function ProblemSection() {
     </section>
   );
 }
-

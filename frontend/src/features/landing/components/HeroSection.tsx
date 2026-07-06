@@ -13,8 +13,7 @@ export default function HeroSection() {
 
             <h1 className="mt-6 text-4xl sm:text-5xl font-black text-text leading-tight">
               모두의 시간을 <br />
-              <span className="text-accent-purple ">쉽고 빠르게</span>{" "}
-              <br />
+              <span className="text-accent-purple ">쉽고 빠르게</span> <br />
               맞추는 방법!
             </h1>
 

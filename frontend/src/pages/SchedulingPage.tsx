@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Button from "@/shared/components/button/Button";
-import Input from "@/shared/components/input/Input";
+import Button from "@/shared/components/ui/Button";
+import Input from "@/shared/components/ui/Input";
 import Card from "@/shared/components/card/Card";
 import PageHeader from "@/shared/components/header/PageHeader";
 

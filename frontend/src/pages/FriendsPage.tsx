@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Button from "@/shared/components/button/Button";
+import Button from "@/shared/components/ui/Button";
 import PageHeader from "@/shared/components/header/PageHeader";
 import Card from "@/shared/components/card/Card";
-import Input from "@/shared/components/input/Input";
+import Input from "@/shared/components/ui/Input";
 import Modal from "@/shared/components/modal/Modal";
 
 interface Friend {

@@ -1,9 +1,9 @@
-import CTASection from "@/features/landing/CTASection";
-import ExampleSection from "@/features/landing/ExampleSection";
-import FeatureSection from "@/features/landing/FeatureSection";
-import HeroSection from "@/features/landing/HeroSection";
-import ProblemSection from "@/features/landing/ProblemSection";
-import ProcessSection from "@/features/landing/ProcessSection";
+import CTASection from "@/features/landing/components/CTASection";
+import ExampleSection from "@/features/landing/components/ExampleSection";
+import FeatureSection from "@/features/landing/components/FeatureSection";
+import HeroSection from "@/features/landing/components/HeroSection";
+import ProblemSection from "@/features/landing/components/ProblemSection";
+import ProcessSection from "@/features/landing/components/ProcessSection";
 import { useOutletContext } from "react-router-dom";
 
 // Context 받기위한 타입 정의

@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 import { Footer } from "@/shared/components/footer/Footer";
 import LandingHeader from "../shared/components/header/LandingHeader";
 import Modal from "@/shared/components/modal/Modal";
-import LoginForm from "@/features/auth/LoginForm";
-import SignupForm from "@/features/auth/SignupForm"; // 회원가입 폼 추가
+import LoginForm from "@/features/auth/components/LoginForm";
+import SignupForm from "@/features/auth/components/SignupForm"; // 회원가입 폼 추가
 
 export const AuthLayout = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

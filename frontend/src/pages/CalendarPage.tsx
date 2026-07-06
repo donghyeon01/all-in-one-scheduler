@@ -1,7 +1,7 @@
 import CalendarView from "@/features/calendar/components/CalendarView";
 import PageHeader from "@/shared/components/header/PageHeader";
-import Button from "@/shared/components/button/Button";
-import { useEventStore } from "@/app/store/eventStore";
+import Button from "@/shared/components/ui/Button";
+import { useEventStore } from "@/features/calendar/store/EventStore";
 import { useState } from "react";
 import EventModal from "@/features/calendar/components/EventModal";
 import EventDetailModal from "@/features/calendar/components/EventDetailModal";

@@ -1,4 +1,4 @@
-import { Card } from "@/shared/components/card/LandingCard";
+import { Card } from "@/features/landing/components/LandingCard";
 import { Users, CalendarDays, Sparkles, CheckCircle } from "lucide-react";
 
 const steps = [

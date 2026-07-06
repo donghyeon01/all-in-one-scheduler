@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authApi } from "@/shared/api/authApi";
 import { useAuthStore } from "@/app/store/authStore";
 
 interface LoginFormProps {
