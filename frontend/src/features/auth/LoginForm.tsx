@@ -22,8 +22,11 @@ export default function LoginForm({
     e.preventDefault();
 
     try {
-      const response = await authApi.login({ email, password });
-      login(response.accessToken);
+      // const response = await authApi.login({ email, password });
+      // login(response.accessToken);
+
+      // 프론트 발표 용 임시 토큰주입
+      login("mock-access-token-soso-1234");
 
       if (onClose) onClose();
       navigate("/todo");
