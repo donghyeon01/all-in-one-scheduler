@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-
 import { useAuthStore } from "@/app/store/authStore";
 
 interface Props {
@@ -8,8 +7,10 @@ interface Props {
 
 export default function ProtectedRoute({ children }: Props) {
   const token = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  if (!token) {
+  // 토큰이 없거나 인증 플래그가 false인 경우 로그인으로 튕겨냄
+  if (!token || !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

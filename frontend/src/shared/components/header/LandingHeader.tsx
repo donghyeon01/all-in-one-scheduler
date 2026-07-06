@@ -93,7 +93,7 @@ export default function LandingHeader({
     <BaseHeader
       // 1. 왼쪽 슬롯에 로고 전달
       leftSlot={
-        <Link to="/" className="text-xl font-bold">
+        <Link to="/" className="text-2xl font-black text-accent-purple">
           SOSO
         </Link>
       }

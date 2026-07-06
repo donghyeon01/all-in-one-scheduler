@@ -1,20 +1,47 @@
 import { useMemo, useState } from "react";
 import TodoItem from "@/features/todo/components/TodoItem";
 import TodoStats from "@/features/todo/components/TodoStats";
-import { tasks } from "@/features/todo/mock/tasks";
+import { tasks as mockTasks } from "@/features/todo/mock/tasks";
 import PageHeader from "@/shared/components/header/PageHeader";
 import Button from "@/shared/components/button/Button";
 import DdayCard from "@/shared/components/card/DdayCard";
 import Input from "@/shared/components/input/Input";
 import TodoFilter from "@/features/todo/components/TodoFilters";
+import EmptyState from "@/shared/components/state/EmptyState";
 
 export default function TodoPage() {
+  // 1. 목업 상수를 React state로 이관하여 동적 상태로 변경
+  const [todos, setTodos] = useState(mockTasks);
   const [search, setSearch] = useState("");
-
   const [filter, setFilter] = useState("전체");
 
+  // 2. 할 일 체크박스 상태 토글 기능 추가
+  const handleToggleTodo = (id: number) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  };
+
+  // 3. 할 일 신규 추가 기능 기능 추가 (데모용 프롬프트 구현)
+  const handleAddTodo = () => {
+    const title = prompt("새로운 할 일을 입력하세요:");
+    if (!title || !title.trim()) return;
+
+    const newTodo = {
+      id: Date.now(), // 고유한 임시 ID 생성
+      title: title.trim(),
+      completed: false,
+      dueDate: new Date().toISOString().split("T")[0], // 오늘 날짜 기본값
+    };
+
+    setTodos((prevTodos) => [newTodo, ...prevTodos]);
+  };
+
+  // 4. 필터링 로직 (todos 상태 기반으로 수정)
   const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
+    return todos.filter((task) => {
       const matchesSearch = task.title
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -28,18 +55,19 @@ export default function TodoPage() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [search, filter]);
+  }, [todos, search, filter]);
 
   return (
     <>
       <PageHeader title="할 일 관리" description="오늘의 할 일을 관리하세요.">
-        <Button>+ 할 일 추가</Button>
+        {/* + 할 일 추가 버튼에 이벤트 연결 */}
+        <Button onClick={handleAddTodo}>+ 할 일 추가</Button>
       </PageHeader>
 
       <TodoStats
-        total={tasks.length}
-        active={tasks.filter((task) => !task.completed).length}
-        completed={tasks.filter((task) => task.completed).length}
+        total={todos.length}
+        active={todos.filter((task) => !task.completed).length}
+        completed={todos.filter((task) => task.completed).length}
       />
 
       <DdayCard />
@@ -54,15 +82,29 @@ export default function TodoPage() {
 
       <TodoFilter current={filter} onChange={setFilter} />
 
-      <div>
-        {filteredTasks.map((task) => (
-          <TodoItem
-            key={task.id}
-            title={task.title}
-            completed={task.completed}
-            dueDate={task.dueDate}
+      {/* 5. 투두 리스트 렌더링 영역 및 EmptyState 조건부 렌더링 결합 */}
+      <div className="mt-4">
+        {filteredTasks.length === 0 ? (
+          <EmptyState
+            title="할 일이 없습니다."
+            description={
+              search
+                ? "검색 결과를 찾을 수 없어요. 다른 키워드를 입력해 보세요!"
+                : "새로운 할 일을 등록하고 하루를 시작해 보세요!"
+            }
           />
-        ))}
+        ) : (
+          filteredTasks.map((task) => (
+            <TodoItem
+              key={task.id}
+              id={task.id} // [추가] 토글 식별용 ID
+              title={task.title}
+              completed={task.completed}
+              dueDate={task.dueDate}
+              onToggle={handleToggleTodo} // [추가] 토글 헨들러 주입
+            />
+          ))
+        )}
       </div>
     </>
   );
