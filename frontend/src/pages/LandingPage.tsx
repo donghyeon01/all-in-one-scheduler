@@ -4,8 +4,16 @@ import FeatureSection from "@/features/landing/FeatureSection";
 import HeroSection from "@/features/landing/HeroSection";
 import ProblemSection from "@/features/landing/ProblemSection";
 import ProcessSection from "@/features/landing/ProcessSection";
+import { useOutletContext } from "react-router-dom";
+
+// Context 받기위한 타입 정의
+interface AuthContextType {
+  openLogin: () => void;
+  openSignup: () => void;
+}
 
 export default function LandingPage() {
+  const { openLogin, openSignup } = useOutletContext<AuthContextType>();
   return (
     <div className="">
       <main>
@@ -36,7 +44,8 @@ export default function LandingPage() {
 
         {/* 회원가입 유도 */}
         <div id="cta">
-          <CTASection />
+          {/* CTA 섹션에 트리거 함수들 전달 */}
+          <CTASection onLoginClick={openLogin} onSignupClick={openSignup} />
         </div>
       </main>
     </div>

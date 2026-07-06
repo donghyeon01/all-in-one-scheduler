@@ -1,88 +1,50 @@
+import React from "react";
 import { Link } from "react-router-dom";
+import BaseHeader from "./BaseHeader"; // 공통 헤더 컴포넌트 임포트
+import LogoutButton from "@/features/auth/LogoutButton";
+import Avatar from "../avatar/Avatar";
 
-export default function MainHeader() {
+export default function MainHeader(): React.JSX.Element {
   return (
-    <header
-      className="
-    sticky top-0 z-50 flex justify-between h-[76px] items-center 
-    bg-background backdrop-blur-md border-b border-border px-6">
-      <div
-        className="
-        mx-auto
-        flex
-        h-20
-        w-full
-        items-center
-        justify-between
-        px-8
-      ">
-        <Link
-          to="/todo"
-          className="
-          text-2xl
-          font-black
-          text-accent-purple
-        ">
+    <BaseHeader
+      // 1. 왼쪽 슬롯: 메인 서비스 로고
+      leftSlot={
+        <Link to="/todo" className="text-2xl font-black text-accent-purple">
           SOSO
         </Link>
-
-        <nav className="flex items-center gap-6 ">
+      }
+      // 2. 가운데 슬롯: 메인 서비스 메뉴 네비게이션 링크들
+      centerSlot={
+        <>
           <Link
             to="/todo"
             className="font-bold text-text-gray hover:text-text transition">
             Todo
           </Link>
-
           <Link
             to="/calendar"
             className="font-bold text-text-gray hover:text-text transition">
             Calendar
           </Link>
-
           <Link
             to="/friends"
             className="font-bold text-text-gray hover:text-text transition">
             Friends
           </Link>
-
           <Link
             to="/scheduling"
             className="font-bold text-text-gray hover:text-text transition">
             Scheduling
           </Link>
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <div
-            className="
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-full
-            bg-primary
-            font-bold
-          ">
-            동현
-          </div>
-
-          <button
-            className="
-            rounded-xl
-            bg-white
-            px-4
-            py-2
-            text-sm
-            font-semibold
-            shadow-sm
-            hover:shadow-md
-            transition
-          ">
-            로그아웃
-          </button>
-        </div>
-      </div>
-    </header>
+        </>
+      }
+      // 3. 오른쪽 슬롯: 유저 프로필 아바타 및 로그아웃 버튼
+      rightSlot={
+        <>
+          <Avatar name="동현" />
+          <LogoutButton />
+        </>
+      }
+    />
   );
 }

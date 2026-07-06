@@ -22,65 +22,59 @@ import com.devhyeon.scheduler.security.jwt.JwtProvider;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+                CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of("http://localhost:5173"));
+                configuration.setAllowedOrigins(
+                                List.of("http://localhost:5173"));
 
-        configuration.setAllowedMethods(
-                List.of("*"));
+                configuration.setAllowedMethods(
+                                List.of("*"));
 
-        configuration.setAllowedHeaders(
-                List.of("*"));
+                configuration.setAllowedHeaders(
+                                List.of("*"));
 
-        configuration.setAllowCredentials(true);
+                configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration);
+                source.registerCorsConfiguration(
+                                "/**",
+                                configuration);
 
-        return source;
-    }
+                return source;
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(
-            HttpSecurity http,
-            JwtProvider jwtProvider,
-            CustomUserDetailsService userDetailsService)
-            throws Exception {
+        @Bean
+        public SecurityFilterChain filterChain(
+                        HttpSecurity http,
+                        JwtProvider jwtProvider,
+                        CustomUserDetailsService userDetailsService)
+                        throws Exception {
 
-        return http
-                .csrf(csrf -> csrf.disable())
+                return http
+                                .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> {})
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
-                         .anyRequest()
-                         .authenticated()
-                )
+                                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                                                "/api/auth/**").permitAll()
+                                                .anyRequest()
+                                                .authenticated())
 
-                .addFilterBefore(
-                        new JwtFilter(
-                                jwtProvider,
-                                userDetailsService),
-                        UsernamePasswordAuthenticationFilter.class
-                )
+                                .addFilterBefore(
+                                                new JwtFilter(
+                                                                jwtProvider,
+                                                                userDetailsService),
+                                                UsernamePasswordAuthenticationFilter.class)
 
-                .build();
-    }
+                                .build();
+        }
 }

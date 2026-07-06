@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import BaseHeader from "./BaseHeader";
 
 const navItems = [
   { id: "hero", label: "홈" },
@@ -9,7 +10,16 @@ const navItems = [
   { id: "example", label: "추천일정" },
 ];
 
-export default function LandingHeader() {
+// 로그인 회원가입 모달창을 위한 props
+interface LandingHeaderProps {
+  onLoginClick: () => void;
+  onSignupClick: () => void; // 추가
+}
+
+export default function LandingHeader({
+  onLoginClick,
+  onSignupClick,
+}: LandingHeaderProps) {
   const [activeSection, setActiveSection] = useState("hero");
 
   // 💡 클릭으로 인한 스크롤 중인지 기록하는 변수 (리렌더링 방지를 위해 useRef 사용)
@@ -80,50 +90,49 @@ export default function LandingHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 flex justify-between h-[76px] items-center bg-background border-b-2 border-border px-6">
-      <div className="mx-auto flex gap-2 h-16 w-full items-center justify-between px-6">
+    <BaseHeader
+      // 1. 왼쪽 슬롯에 로고 전달
+      leftSlot={
         <Link to="/" className="text-xl font-bold">
           SOSO
         </Link>
-
-        <nav className="flex justify-center space-x-8 h-16 items-center">
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleScroll(item.id)}
-                className={`relative py-2 text-sm font-semibold transition-colors duration-200 ${
-                  isActive
-                    ? "text-accent-purple font-bold"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}>
-                {item.label}
-
-                {/* 3. 언더바 효과 */}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-black transition-all duration-300" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        <div className="flex gap-3 text-text font-bold">
-          <Link
-            to="/login"
-            className="px-4 py-2 rounded-full border-2 border-transparent hover:border-primary-dark transition-all duration-200">
+      }
+      // 2. 가운데 슬롯에 맵핑되는 메뉴 버튼 전달
+      centerSlot={navItems.map((item) => {
+        const isActive = activeSection === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => handleScroll(item.id)}
+            className={`relative py-2 text-sm font-semibold transition-colors duration-200 ${
+              isActive
+                ? "text-accent-purple font-bold"
+                : "text-gray-500 hover:text-gray-900"
+            }`}>
+            {item.label}
+            {isActive && (
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-black transition-all duration-300" />
+            )}
+          </button>
+        );
+      })}
+      // 3. 오른쪽 슬롯에 링크 버튼들 전달
+      rightSlot={
+        <>
+          <button
+            onClick={onLoginClick}
+            className="px-4 py-2 rounded-full border-2 border-transparent hover:border-primary-dark transition-all duration-200 text-sm font-semibold">
             로그인
-          </Link>
-          <Link
-            to="/signup"
+          </button>
+          <button
+            onClick={onSignupClick}
             className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground 
-            border-2 border-secondary-foreground shadow-[1.5px_1.5px_0px_0px]
-            hover:translate-y-[-2px] transition-all duration-200">
+            border-2 border-text shadow-[1.5px_1.5px_0px_0px]
+            hover:translate-y-[-2px] transition-all duration-200 text-sm font-semibold">
             회원가입
-          </Link>
-        </div>
-      </div>
-    </header>
+          </button>
+        </>
+      }
+    />
   );
 }

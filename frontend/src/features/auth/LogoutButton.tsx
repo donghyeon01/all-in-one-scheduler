@@ -15,12 +15,15 @@ export default function LogoutButton() {
       onClick={handleLogout}
       className="
         rounded-xl
-        border
-        border-border
-        px-4
-        py-2
-        transition
-        hover:bg-red-50
+            bg-white
+            px-4
+            py-2
+            text-sm
+            font-semibold
+            shadow-sm
+            hover:shadow-md
+            transition
+            hover:bg-accent
       ">
       로그아웃
     </button>
