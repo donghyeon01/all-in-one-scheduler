@@ -12,7 +12,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   index?: number;
 }
 
-export default function Card({
+export default function LandingCard({
   variant = "default",
   children,
   className = "",

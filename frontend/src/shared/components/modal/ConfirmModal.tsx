@@ -1,4 +1,4 @@
-import Button from "../ui/Button";
+import Button from "../button/Button";
 import Modal from "./Modal";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
   onConfirm: () => void;
 
-  onCancel: () => void;
+  onClose: () => void;
 }
 
 export default function ConfirmModal({
@@ -24,10 +24,10 @@ export default function ConfirmModal({
   confirmText = "확인",
   cancelText = "취소",
   onConfirm,
-  onCancel,
+  onClose,
 }: Props) {
   return (
-    <Modal isOpen={open} title={title} onClose={onCancel}>
+    <Modal isOpen={open} title={title} onClose={onClose}>
       <p
         className="
         mb-6
@@ -43,7 +43,7 @@ export default function ConfirmModal({
         gap-3
       ">
         <button
-          onClick={onCancel}
+          onClick={onClose}
           className="
           rounded-xl
           border

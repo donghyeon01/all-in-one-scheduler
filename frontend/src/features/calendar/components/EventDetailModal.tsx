@@ -1,4 +1,4 @@
-import Button from "@/shared/components/ui/Button";
+import Button from "@/shared/components/button/Button";
 import Modal from "@/shared/components/modal/Modal";
 
 interface Props {

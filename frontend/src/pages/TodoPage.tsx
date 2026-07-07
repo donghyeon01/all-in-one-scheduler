@@ -3,11 +3,13 @@ import TodoItem from "@/features/todo/components/TodoItem";
 import TodoStats from "@/features/todo/components/TodoStats";
 import { tasks as mockTasks } from "@/features/todo/api/tasks";
 import PageHeader from "@/shared/components/header/PageHeader";
-import Button from "@/shared/components/ui/Button";
-import DdayCard from "@/shared/components/card/DdayCard";
 import Input from "@/shared/components/ui/Input";
 import TodoFilter from "@/features/todo/components/TodoFilters";
 import EmptyState from "@/shared/components/state/EmptyState";
+import TodoInputForm from "@/features/todo/components/TodoInputForm";
+import Modal from "@/shared/components/modal/Modal";
+import Button from "@/shared/components/button/Button";
+import DdayCard from "@/shared/components/card/DdayCard";
 
 export default function TodoPage() {
   // 1. 목업 상수를 React state로 이관하여 동적 상태로 변경
@@ -15,7 +17,12 @@ export default function TodoPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("전체");
 
-  // 2. 할 일 체크박스 상태 토글 기능 추가
+  // 투두 모달 상태 및 입력 폼 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDueDate, setNewDueDate] = useState("");
+
+  // 2. 할 일 체크박스 상태 토글 기능
   const handleToggleTodo = (id: number) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
@@ -24,19 +31,26 @@ export default function TodoPage() {
     );
   };
 
-  // 3. 할 일 신규 추가 기능 기능 추가 (데모용 프롬프트 구현)
-  const handleAddTodo = () => {
-    const title = prompt("새로운 할 일을 입력하세요:");
-    if (!title || !title.trim()) return;
-
+  //3. 모달 안에서 '등록' 버튼을 눌렀을 때 실행될 함수
+  const handleSubmitTodo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) {
+      alert("할 일을 입력해주세요.");
+      return;
+    }
     const newTodo = {
-      id: Date.now(), // 고유한 임시 ID 생성
-      title: title.trim(),
+      id: Date.now(), // 고유 ID 생성
+      title: newTitle,
       completed: false,
-      dueDate: new Date().toISOString().split("T")[0], // 오늘 날짜 기본값
+      dueDate: newDueDate || new Date().toISOString().split("T")[0], // 날짜 미지정 시 오늘 날짜
     };
 
-    setTodos((prevTodos) => [newTodo, ...prevTodos]);
+    setTodos((prev) => [...prev, newTodo]);
+
+    // 폼 초기화 및 모달 닫기
+    setNewTitle("");
+    setNewDueDate("");
+    setIsModalOpen(false);
   };
 
   // 4. 필터링 로직 (todos 상태 기반으로 수정)
@@ -60,8 +74,8 @@ export default function TodoPage() {
   return (
     <>
       <PageHeader title="할 일 관리" description="오늘의 할 일을 관리하세요.">
-        {/* + 할 일 추가 버튼에 이벤트 연결 */}
-        <Button onClick={handleAddTodo}>+ 할 일 추가</Button>
+        {/* prompt를 띄우는 대신 모달을 열도록 수정 */}
+        <Button onClick={() => setIsModalOpen(true)}>+ 할 일 추가</Button>
       </PageHeader>
 
       <TodoStats
@@ -82,7 +96,6 @@ export default function TodoPage() {
 
       <TodoFilter current={filter} onChange={setFilter} />
 
-      {/* 5. 투두 리스트 렌더링 영역 및 EmptyState 조건부 렌더링 결합 */}
       <div className="mt-4">
         {filteredTasks.length === 0 ? (
           <EmptyState
@@ -97,15 +110,54 @@ export default function TodoPage() {
           filteredTasks.map((task) => (
             <TodoItem
               key={task.id}
-              id={task.id} // [추가] 토글 식별용 ID
+              id={task.id}
               title={task.title}
               completed={task.completed}
               dueDate={task.dueDate}
-              onToggle={handleToggleTodo} // [추가] 토글 헨들러 주입
+              onToggle={handleToggleTodo}
             />
           ))
         )}
       </div>
+
+      {/* 새롭게 추가된 할 일 등록 커스텀 모달 */}
+      <Modal
+        isOpen={isModalOpen}
+        title="새로운 할 일 추가"
+        onClose={() => setIsModalOpen(false)}>
+        <form onSubmit={handleSubmitTodo} className="space-y-4 mt-4">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-text">
+              할 일 제목
+            </label>
+            <Input
+              placeholder="무엇을 해야 하나요?"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-bold text-text">
+              마감일
+            </label>
+            <Input
+              type="date"
+              value={newDueDate}
+              onChange={(e) => setNewDueDate(e.target.value)}
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="rounded-xl border-2 border-text bg-white px-4 py-2 font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-slate-50 cursor-pointer">
+              취소
+            </button>
+            <Button type="submit">등록하기</Button>
+          </div>
+        </form>
+      </Modal>
     </>
   );
 }

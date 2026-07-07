@@ -5,9 +5,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 
 import interactionPlugin from "@fullcalendar/interaction";
+import type { CalendarEvent } from "../store/EventStore";
 
 interface Props {
-  events: any[];
+  events: CalendarEvent[];
 
   onDateClick: (date: string) => void;
 

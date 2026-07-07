@@ -30,7 +30,7 @@ export default function ProcessSection() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
           <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl border-2 font-semibold text-slate-700">
-            ⚙️ How It Works
+            How It Works
           </span>
 
           <h2 className="mt-6 text-4xl font-bold">단 4단계로 일정 확정</h2>

@@ -9,23 +9,37 @@ interface LoginFormProps {
 
 export default function LoginForm({
   onClose,
-  onSwitchToSignup, // [추가] 구조분해 할당 적용
+  onSwitchToSignup,
 }: LoginFormProps): React.JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
+  // 스토어에서 login 함수와 setUser 함수를 모두 가져옵니다.
   const login = useAuthStore((state) => state.login);
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      // const response = await authApi.login({ email, password });
-      // login(response.accessToken);
+      /* [추후 주석 해제하여 사용할 실제 API 패턴]
+      const response = await authApi.login({ email, password });
+      login(response.accessToken);
+      // API에서 유저 정보를 함께 내려준다면 아래와 같이 연동합니다.
+      // setUser(response.user); 
+      */
 
-      // 프론트 발표 용 임시 토큰주입
+      // 현재: 프론트 시연용 임시 토큰 및 유저 정보 주입
       login("mock-access-token-soso-1234");
+
+      // 로그인한 사람의 이메일 아이디를 기반으로 가상의 유저 정보 생성 및 전역 저장
+      setUser({
+        id: 1,
+        email: email,
+        name: email.split("@")[0] || "홍길동", // 이메일 앞자리를 닉네임처럼 사용
+      });
 
       if (onClose) onClose();
       navigate("/todo");

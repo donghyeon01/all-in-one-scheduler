@@ -1,4 +1,6 @@
 import Card from "@/shared/components/card/Card";
+import SectionHeader from "@/shared/components/header/SectionHeader";
+import Section from "@/shared/components/layout/Section";
 import { CalendarDays, Users, MessageCircle, BookOpen } from "lucide-react";
 
 const problems = [
@@ -26,55 +28,30 @@ const problems = [
       "여러 사람의 일정을 고려하다 보면 정작 약속을 잡는 것이 가장 어려워져요.",
   },
 ];
-
 export default function ProblemSection() {
   return (
-    <section className="bg-white  py-20 border-b-2 border-border overflow-hidden">
-      <div className="mx-auto max-w-7xl px-6">
-        {/* Section Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl border-2 font-semibold text-slate-700">
-            {/* 😫  */}
-            Problem
-          </span>
+    <Section variant="white">
+      <SectionHeader
+        badge="Problem"
+        title={
+          <>
+            이런 경험 <span className="text-accent-purple">있으신가요?</span>
+          </>
+        }
+        description="약속 한 번 잡으려다 진이 다 빠졌던 슬픈 경험이 있다면, 이제 SOSO가 도와드릴게요!"
+      />
 
-          <h2 className="mt-6 text-4xl font-bold text-text">
-            이런 경험 있으신가요?
-          </h2>
-
-          <p className="mt-4 text-lg text-text-gray">
-            약속 한 번 잡으려다 진이 다 빠졌던 슬픈 경험이 있다면, 이제{" "}
-            <span className="text-accent-purple font-bold">SOSO</span>가 도와
-            드릴게요!
-          </p>
-        </div>
-
-        {/* Problem Cards */}
-
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {problems.map((problem) => (
-            <Card
-              key={problem.title}
-              variant="landing" // variant 추가!
-              title={problem.title}
-              description={problem.description}
-              icon={problem.icon}
-            />
-          ))}
-        </div>
-
-        {/* Bottom Message */}
-        <div className="mt-20 rounded-3xl bg-primary-bg p-10 text-center">
-          <h3 className="text-2xl font-bold text-text">
-            SOSO가 일정 조율을 대신합니다.
-          </h3>
-
-          <p className="mt-4 text-muted-foreground">
-            친구, 팀원, 스터디원들의 일정을 기반으로 가장 적합한 시간을 자동으로
-            추천받아 보세요.
-          </p>
-        </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {problems.map((problem) => (
+          <Card
+            key={problem.title}
+            variant="landing"
+            title={problem.title}
+            description={problem.description}
+            icon={problem.icon}
+          />
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }

@@ -11,10 +11,9 @@ export interface CalendarEvent {
 
 interface EventStore {
   events: CalendarEvent[];
-
   addEvent: (event: CalendarEvent) => void;
-
   deleteEvent: (id: string) => void;
+  updateEvent: (event: CalendarEvent) => void;
 }
 
 export const useEventStore = create<EventStore>((set) => ({
@@ -28,5 +27,12 @@ export const useEventStore = create<EventStore>((set) => ({
   deleteEvent: (id) =>
     set((state) => ({
       events: state.events.filter((event) => event.id !== id),
+    })),
+
+  updateEvent: (updatedEvent) =>
+    set((state) => ({
+      events: state.events.map((event) =>
+        event.id === updatedEvent.id ? updatedEvent : event,
+      ),
     })),
 }));

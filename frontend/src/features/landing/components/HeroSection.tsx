@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import CalendarMockup from "./CalendarMokup";
+import CalendarMockup from "./CalendarMockup";
 
 export default function HeroSection() {
   return (
