@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import BaseHeader from "./BaseHeader"; // 공통 헤더 컴포넌트 임포트
-import LogoutButton from "@/features/auth/LogoutButton";
+import LogoutButton from "@/features/auth/components/LogoutButton";
 import Avatar from "../ui/Avatar";
 
 export default function MainHeader(): React.JSX.Element {
