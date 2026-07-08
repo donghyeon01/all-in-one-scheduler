@@ -1,8 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import { AuthLayout } from "@/layouts/AuthLayout";
-import LoginForm from "@/features/auth/components/LoginForm";
-import SignupForm from "@/features/auth/components/SignupForm";
 import TodoPage from "@/pages/TodoPage";
 import CalendarPage from "@/pages/CalendarPage";
 import FriendsPage from "@/pages/FriendsPage";
@@ -14,11 +12,7 @@ export const router = createBrowserRouter([
   // 로그인 없이 접근(landing)
   {
     element: <AuthLayout />,
-    children: [
-      { path: "/", element: <LandingPage /> },
-      { path: "login", element: <LoginForm /> },
-      { path: "signup", element: <SignupForm /> },
-    ],
+    children: [{ path: "/", element: <LandingPage /> }],
   },
 
   {

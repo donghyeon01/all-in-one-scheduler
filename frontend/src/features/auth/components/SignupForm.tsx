@@ -36,7 +36,7 @@ export default function SignupForm({
   };
 
   return (
-    <main className="w-full rounded-3xl border border-border bg-white p-8 shadow-md">
+    <main>
       <div>
         <div className="text-center">
           <h1 className="text-3xl font-bold">SOSO</h1>

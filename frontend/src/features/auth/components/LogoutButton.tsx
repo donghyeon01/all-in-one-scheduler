@@ -14,7 +14,7 @@ export default function LogoutButton() {
     localStorage.removeItem("refreshToken");
 
     // 3. 로그인 페이지로 안전하게 리다이렉트
-    navigate("/login");
+    navigate("/");
   };
 
   return (
