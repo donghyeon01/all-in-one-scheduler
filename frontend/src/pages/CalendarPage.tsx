@@ -3,6 +3,7 @@ import PageHeader from "@/shared/components/header/PageHeader";
 import { useEventStore } from "@/features/calendar/store/EventStore";
 import EventModal from "@/features/calendar/components/EventModal";
 import EventDetailModal from "@/features/calendar/components/EventDetailModal";
+import EventEditModal from "@/features/calendar/components/EventEditModal";
 import CalendarSidebar from "@/features/calendar/components/CalendarSidebar";
 import ConfirmModal from "@/shared/components/modal/ConfirmModal";
 import { useCalendarModals } from "@/features/calendar/hooks/useCalendarModals";
@@ -48,7 +49,15 @@ export default function CalendarPage() {
         event={state.selectedEvent}
         onClose={() => actions.setIsDetailOpen(false)}
         onDelete={actions.handleDeleteTrigger}
-        onEdit={() => alert("수정 기능은 다음 단계에서 진행됩니다.")}
+        onEdit={actions.handleEditTrigger}
+      />
+
+      {/* 일정 수정 모달 */}
+      <EventEditModal
+        open={state.isEditOpen}
+        event={state.selectedEvent}
+        onClose={() => actions.setIsEditOpen(false)}
+        onSubmit={actions.handleEditSubmit}
       />
 
       {/* 삭제 재확인 팝업 */}

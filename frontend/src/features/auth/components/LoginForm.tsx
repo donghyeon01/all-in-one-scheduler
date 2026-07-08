@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/app/store/authStore";
 
 interface LoginFormProps {
   onClose?: () => void; // 모달 내부에서 페이지 이동 시 모달을 닫아주기 위한 프롭스

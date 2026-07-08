@@ -62,8 +62,8 @@ export default function ExampleSection() {
         </div>
 
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {results.map((result) => (
-            <ResultCard />
+          {results.map((_, index) => (
+            <ResultCard key={index} />
           ))}
         </div>
       </div>

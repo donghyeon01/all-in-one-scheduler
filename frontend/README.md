@@ -50,45 +50,42 @@ src
 
 ### app
 
-애플리케이션 전역 설정
+애플리케이션 전역 설정 및 스토어
 
-- Router
-- ProtectedRoute
-- Zustand Store
-- Provider
+- routes/router.tsx
+- routes/ProtectedRoute.tsx
+- store/authStore.ts
 
 ### shared
 
-여러 기능에서 공통 사용
+여러 기능에서 공통으로 사용되는 인프라 레이어
 
-- API
-- Components
-- Hooks
-- Utils
-- Types
+- api/axios.ts (Axios 공통 인스턴스)
+- components (공통 UI, Layout, Modal, Header 등)
+- hooks (향후 확장 예정)
+- utils (향후 확장 예정)
+- types (향후 확장 예정)
 
 ### features
 
-기능 단위 모듈
+도메인별 비즈니스 로직 및 기능 컴포넌트 분할 영역
 
-- auth
-- todo
-- calendar
-- friends
-- scheduling
-- notification
+- auth (LoginForm, SignupForm 등)
+- todo (TodoItem, TodoFilters 등)
+- calendar (CalendarView, EventEditModal 등)
+- friends (FriendList, AddFriendModal 등)
+- scheduling (SchedulingForm, SchedulingResults 등)
+- landing (HeroSection, FeatureSection 등)
 
 ### pages
 
-라우터와 1:1 매핑
+라우터와 1:1 매핑되는 최상위 페이지 컨테이너
 
-- LandingPage
-- LoginPage
-- SignupPage
-- TodoPage
-- CalendarPage
-- FriendsPage
-- SchedulingPage
+- LandingPage.tsx
+- TodoPage.tsx
+- CalendarPage.tsx
+- FriendsPage.tsx
+- SchedulingPage.tsx
 
 ---
 
@@ -220,105 +217,75 @@ export interface Task {
 - PWA 지원
 
 src/
-├── app/ # 애플리케이션 전역 설정 영역
-│ ├── router/
-│ │ ├── Router.tsx # 전체 라우팅 정의
-│ │ └── ProtectedRoute.tsx # JWT 로그인 여부 검사 후 접근 제어
-│ │
-│ ├── providers/
-│ │ └── AuthProvider.tsx # 앱 시작 시 인증 상태 초기화 및 유지
-│ │
-│ └── store/
-│ ├── authStore.ts # 로그인 사용자 정보/JWT 상태 관리 (Zustand)
-│ ├── taskStore.ts # Todo 상태 관리
-│ └── eventStore.ts # Event(일정) 상태 관리
+├── app/                  # 애플리케이션 전역 설정 영역
+│   ├── routes/           # 라우팅 정의 및 가드
+│   │   ├── router.tsx    # 전체 라우트 정의 (LoginForm/SignupForm을 자식으로 내포)
+│   │   └── ProtectedRoute.tsx # JWT 로그인 검사 및 접근 제어
+│   └── store/
+│       └── authStore.ts   # 로그인 사용자 정보/JWT 상태 관리 (Zustand)
 │
-├── shared/ # 여러 기능에서 공통으로 사용하는 코드
-│ ├── api/
-│ │ ├── axios.ts # Axios 인스턴스 생성 및 인터셉터 설정
-│ │ ├── authApi.ts # 로그인/회원가입 API
-│ │ ├── taskApi.ts # Todo API
-│ │ ├── eventApi.ts # Event API
-│ │ ├── friendApi.ts # 친구 관련 API
-│ │ └── schedulingApi.ts # 일정 조율 API
-│ │
-│ ├── components/
-│ │ ├── Button.tsx # 공통 버튼 컴포넌트
-│ │ ├── Input.tsx # 공통 입력 컴포넌트
-│ │ ├── Modal.tsx # 공통 모달 컴포넌트
-│ │ ├── Header.tsx # 상단 네비게이션
-│ │ ├── Sidebar.tsx # 좌측 메뉴바
-│ │ ├── Loading.tsx # 로딩 UI
-│ │ └── EmptyState.tsx # 데이터 없음 UI
-│ │
-│ ├── hooks/
-│ │ ├── useAuth.ts # 인증 관련 커스텀 훅
-│ │ ├── useDebounce.ts # 입력 디바운싱
-│ │ └── useModal.ts # 모달 상태 관리
-│ │
-│ ├── utils/
-│ │ ├── date.ts # 날짜 포맷 유틸
-│ │ ├── token.ts # JWT 저장/삭제 유틸
-│ │ ├── validation.ts # 입력값 검증 함수
-│ │ └── constants.ts # 상수 관리
-│ │
-│ └── types/
-│ ├── auth.ts # 로그인/회원가입 타입
-│ ├── task.ts # Todo 타입 정의
-│ ├── event.ts # Event 타입 정의
-│ ├── friend.ts # 친구 타입 정의
-│ └── scheduling.ts # 일정 조율 타입 정의
+├── shared/               # 여러 기능에서 공통으로 사용하는 코드
+│   ├── api/
+│   │   └── axios.ts      # Axios 인스턴스 생성 및 인터셉터 설정
+│   ├── components/       # 재사용 가능한 프리미엄 컴포넌트 목록
+│   │   ├── badge/
+│   │   ├── button/
+│   │   ├── card/
+│   │   ├── footer/
+│   │   ├── header/
+│   │   ├── layout/
+│   │   ├── loading/
+│   │   ├── modal/
+│   │   ├── state/
+│   │   └── ui/
+│   ├── hooks/            # 공통 훅 (향후 확장 예정)
+│   ├── utils/            # 공통 유틸리티 (향후 확장 예정)
+│   └── types/            # 공통 타입 정의 (향후 확장 예정)
 │
-├── features/ # 기능 단위 모듈
+├── features/             # 기능 단위 도메인 모듈 (비즈니스 로직 및 컴포넌트)
+│   ├── auth/
+│   │   ├── api/
+│   │   │   └── authApi.ts # 로그인/회원가입 API
+│   │   └── components/   # 로그인/회원가입 UI 폼 컴포넌트
+│   │       ├── LoginForm.tsx
+│   │       ├── LogoutButton.tsx
+│   │       └── SignupForm.tsx
+│   ├── todo/
+│   │   ├── api/
+│   │   │   └── tasks.ts   # Todo Mock 데이터
+│   │   └── components/   # 할 일 필터 및 아이템 컴포넌트
+│   │       ├── TodoFilters.tsx
+│   │       ├── TodoInputForm.tsx
+│   │       ├── TodoItem.tsx
+│   │       └── TodoStats.tsx
+│   ├── calendar/
+│   │   ├── components/   # 달력 뷰 및 추가/상세/수정 모달
+│   │   ├── hooks/
+│   │   │   └── useCalendarModals.ts # 달력 내 상태 & 모달 제어 커스텀 훅
+│   │   └── store/
+│   │       └── EventStore.ts # 일정 상태 관리 (Zustand)
+│   ├── friends/
+│   │   └── components/   # 친구 목록 & 초대 모달 컴포넌트
+│   │       ├── FriendList.tsx
+│   │       └── AddFriendModal.tsx
+│   ├── scheduling/
+│   │   └── components/   # 일정 조율 조건 폼 & 매칭 결과 컴포넌트
+│   │       ├── SchedulingForm.tsx
+│   │       └── SchedulingResults.tsx
+│   └── landing/
+│       └── components/   # 랜딩 소개 각 섹션 컴포넌트
 │
-│ ├── auth/
-│ │ ├── components/ # 로그인/회원가입 UI
-│ │ ├── hooks/ # 인증 관련 훅
-│ │ └── services/ # 인증 비즈니스 로직
-│ │
-│ ├── todo/
-│ │ ├── components/ # Todo 목록/생성/수정 UI
-│ │ ├── hooks/ # Todo 관련 훅
-│ │ └── services/ # Todo 기능 로직
-│ │
-│ ├── calendar/
-│ │ ├── components/ # 달력, 일정 카드 UI
-│ │ ├── hooks/ # 달력 관련 훅
-│ │ └── services/ # 캘린더 비즈니스 로직
-│ │
-│ ├── friends/
-│ │ ├── components/ # 친구 목록/친구 요청 UI
-│ │ ├── hooks/ # 친구 기능 훅
-│ │ └── services/ # 친구 기능 로직
-│ │
-│ ├── scheduling/
-│ │ ├── components/ # 일정 조율 화면
-│ │ ├── hooks/ # 일정 조율 훅
-│ │ └── services/ # 일정 교집합 계산 결과 처리
-│ │
-│ └── notification/
-│ ├── components/ # 알림 UI
-│ ├── hooks/ # 알림 관련 훅
-│ └── services/ # 알림 처리 로직
-│
-├── pages/ # Router와 1:1 매핑되는 페이지
-│ ├── LandingPage.tsx # 서비스 소개 페이지
-│ ├── LoginPage.tsx # 로그인 페이지
-│ ├── SignupPage.tsx # 회원가입 페이지
-│ ├── TodoPage.tsx # Todo 메인 페이지
-│ ├── CalendarPage.tsx # 캘린더 페이지
-│ ├── FriendsPage.tsx # 친구 관리 페이지
-│ ├── SchedulingPage.tsx # 일정 조율 페이지
-│ ├── NotificationPage.tsx # 알림 페이지
-│ └── NotFoundPage.tsx # 404 페이지
+├── pages/                # Router와 1:1 매핑되는 페이지 컨테이너
+│   ├── LandingPage.tsx   # 서비스 소개 페이지
+│   ├── TodoPage.tsx      # 할 일 관리 메인 페이지
+│   ├── CalendarPage.tsx  # 캘린더 일정 관리 페이지
+│   ├── FriendsPage.tsx   # 친구 목록 관리 페이지
+│   └── SchedulingPage.tsx # 스마트 일정 조율 페이지
 │
 ├── layouts/
-│ ├── MainLayout.tsx # 로그인 후 공통 레이아웃
-│ │ # (Header + Sidebar + Content)
-│ │
-│ └── AuthLayout.tsx # 로그인/회원가입 전용 레이아웃
+│   ├── MainLayout.tsx    # 로그인 후 레이아웃 (Header + Sidebar + Content)
+│   └── AuthLayout.tsx    # 로그인/회원가입 전용 레이아웃
 │
-├── App.tsx # 최상위 컴포넌트
-│ # Router 연결
-│
-└── main.tsx # React 애플리케이션 진입점 # ReactDOM 렌더링
+├── App.tsx               # 최상위 컴포넌트 (Router 연결)
+└── main.tsx              # React 애플리케이션 진입점 및 ReactDOM 렌더링
+

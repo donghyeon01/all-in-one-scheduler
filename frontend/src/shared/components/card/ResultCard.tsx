@@ -1,5 +1,3 @@
-import React from "react";
-
 export const ResultCard = () => {
   return (
     <div className="rounded-3xl border-3 border-text bg-white p-6 shadow-[6px_6px_0px_0px_#edf4ff] hover:translate-y-[-4px] transition-all duration-200">

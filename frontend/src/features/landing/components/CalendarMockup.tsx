@@ -18,7 +18,6 @@ export default function CalendarMockup() {
           ))}
 
           {Array.from({ length: 31 }, (_, i) => {
-            const date = i + i; // 날짜 배치용 더미 인덱스
             const dayNum = i + 1;
             const isSelected = dayNum === 15 || dayNum === 16 || dayNum === 17;
 
