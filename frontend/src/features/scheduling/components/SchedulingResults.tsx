@@ -5,6 +5,8 @@ export interface MatchResult {
   time: string;
   availableCount: number;
   totalCount: number;
+  startTime: string;
+  endTime: string;
 }
 
 interface SchedulingResultsProps {

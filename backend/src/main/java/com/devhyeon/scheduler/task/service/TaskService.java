@@ -1,6 +1,7 @@
 package com.devhyeon.scheduler.task.service;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,6 +17,7 @@ import com.devhyeon.scheduler.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;

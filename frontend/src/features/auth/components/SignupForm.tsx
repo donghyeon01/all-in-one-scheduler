@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { authApi } from "@/features/auth/api/authApi";
 
 interface SignupFormProps {
   onClose?: () => void; // 회원가입 완료 시 모달을 닫기 위한 함수
@@ -14,7 +15,7 @@ export default function SignupForm({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -22,17 +23,16 @@ export default function SignupForm({
       return;
     }
 
-    console.log({
-      name,
-      email,
-      password,
-    });
-
-    // TODO: signup API 호출
-    // const response = await authApi.signup({ name, email, password });
-
-    alert("회원가입이 완료되었습니다.");
-    if (onClose) onClose();
+    try {
+      await authApi.signup({ name, email, password });
+      alert("회원가입이 완료되었습니다. 로그인해주세요.");
+      if (onSwitchToLogin) onSwitchToLogin();
+      else if (onClose) onClose();
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ?? "회원가입에 실패했습니다. 다시 시도해주세요.";
+      alert(message);
+    }
   };
 
   return (

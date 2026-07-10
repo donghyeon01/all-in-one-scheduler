@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import TodoItem from "@/features/todo/components/TodoItem";
 import TodoStats from "@/features/todo/components/TodoStats";
-import { tasks as mockTasks } from "@/features/todo/api/tasks";
+import { taskApi } from "@/features/todo/api/tasks";
+import type { Task } from "@/features/todo/api/tasks";
 import PageHeader from "@/shared/components/header/PageHeader";
 import Input from "@/shared/components/ui/Input";
 import TodoFilter from "@/features/todo/components/TodoFilters";
@@ -11,8 +12,7 @@ import Button from "@/shared/components/button/Button";
 import DdayCard from "@/shared/components/card/DdayCard";
 
 export default function TodoPage() {
-  // 1. 목업 상수를 React state로 이관하여 동적 상태로 변경
-  const [todos, setTodos] = useState(mockTasks);
+  const [todos, setTodos] = useState<Task[]>([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("전체");
 
@@ -21,35 +21,65 @@ export default function TodoPage() {
   const [newTitle, setNewTitle] = useState("");
   const [newDueDate, setNewDueDate] = useState("");
 
+  const fetchTodos = async () => {
+    try {
+      const data = await taskApi.getTasks();
+      setTodos(data);
+    } catch (error) {
+      console.error("할 일 목록 로딩 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
   // 2. 할 일 체크박스 상태 토글 기능
-  const handleToggleTodo = (id: number) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+  const handleToggleTodo = async (id: number) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+
+    try {
+      await taskApi.updateTask(id, {
+        title: todo.title,
+        dueDate: todo.dueDate,
+        completed: !todo.completed,
+      });
+
+      setTodos((prevTodos) =>
+        prevTodos.map((t) =>
+          t.id === id ? { ...t, completed: !t.completed } : t,
+        ),
+      );
+    } catch (error) {
+      console.error("할 일 상태 변경 실패:", error);
+    }
   };
 
   //3. 모달 안에서 '등록' 버튼을 눌렀을 때 실행될 함수
-  const handleSubmitTodo = (e: React.FormEvent) => {
+  const handleSubmitTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) {
       alert("할 일을 입력해주세요.");
       return;
     }
-    const newTodo = {
-      id: Date.now(), // 고유 ID 생성
-      title: newTitle,
-      completed: false,
-      dueDate: newDueDate || new Date().toISOString().split("T")[0], // 날짜 미지정 시 오늘 날짜
-    };
 
-    setTodos((prev) => [...prev, newTodo]);
+    const dueDateStr = newDueDate || new Date().toISOString().split("T")[0];
 
-    // 폼 초기화 및 모달 닫기
-    setNewTitle("");
-    setNewDueDate("");
-    setIsModalOpen(false);
+    try {
+      await taskApi.createTask({
+        title: newTitle,
+        dueDate: dueDateStr,
+      });
+
+      // 폼 초기화 및 모달 닫기
+      setNewTitle("");
+      setNewDueDate("");
+      setIsModalOpen(false);
+      fetchTodos();
+    } catch (error) {
+      console.error("할 일 등록 실패:", error);
+    }
   };
 
   // 4. 필터링 로직 (todos 상태 기반으로 수정)

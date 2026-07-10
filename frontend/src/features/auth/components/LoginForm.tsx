@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/authStore";
+import { authApi } from "../api/authApi";
 
 interface LoginFormProps {
   onClose?: () => void; // 모달 내부에서 페이지 이동 시 모달을 닫아주기 위한 프롭스
@@ -24,28 +25,18 @@ export default function LoginForm({
     e.preventDefault();
 
     try {
-      /* [추후 주석 해제하여 사용할 실제 API 패턴]
       const response = await authApi.login({ email, password });
       login(response.accessToken);
-      // API에서 유저 정보를 함께 내려준다면 아래와 같이 연동합니다.
-      // setUser(response.user); 
-      */
 
-      // 현재: 프론트 시연용 임시 토큰 및 유저 정보 주입
-      login("mock-access-token-soso-1234");
-
-      // 로그인한 사람의 이메일 아이디를 기반으로 가상의 유저 정보 생성 및 전역 저장
-      setUser({
-        id: 1,
-        email: email,
-        name: email.split("@")[0] || "홍길동", // 이메일 앞자리를 닉네임처럼 사용
-      });
+      const me = await authApi.getMe();
+      setUser(me);
 
       if (onClose) onClose();
       navigate("/todo");
-    } catch (error) {
+    } catch (error: any) {
       console.error("로그인 실패:", error);
-      alert("로그인 실패");
+      const message = error?.response?.data?.message || "이메일 또는 비밀번호가 올바르지 않습니다.";
+      alert(message);
     }
   };
 

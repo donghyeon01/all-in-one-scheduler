@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.devhyeon.scheduler.auth.dto.LoginRequest;
 import com.devhyeon.scheduler.auth.dto.LoginResponse;
 import com.devhyeon.scheduler.auth.dto.SignupRequest;
+import com.devhyeon.scheduler.auth.dto.TokenDto;
 import com.devhyeon.scheduler.security.jwt.JwtProvider;
 import com.devhyeon.scheduler.user.entity.User;
 import com.devhyeon.scheduler.user.repository.UserRepository;
@@ -36,7 +37,7 @@ public class AuthService {
     }
 
 //    로그인
-public LoginResponse login(LoginRequest request) {
+public TokenDto login(LoginRequest request) {
 
     User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() ->
@@ -50,8 +51,13 @@ public LoginResponse login(LoginRequest request) {
     }
 
     String accessToken =
-            jwtProvider.generateToken(user.getEmail());
+            jwtProvider.generateAccessToken(user.getEmail());
+    String refreshToken =
+            jwtProvider.generateRefreshToken(user.getEmail());
 
-    return new LoginResponse(accessToken);
+    return TokenDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
 }
 }

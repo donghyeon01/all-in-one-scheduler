@@ -1,50 +1,54 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "@/shared/components/header/PageHeader";
 import SchedulingForm from "@/features/scheduling/components/SchedulingForm";
-import SchedulingResults, { type MatchResult } from "@/features/scheduling/components/SchedulingResults";
+import SchedulingResults from "@/features/scheduling/components/SchedulingResults";
+import { schedulingApi, type MatchResult } from "@/features/scheduling/api/schedulingApi";
+import { eventsApi } from "@/features/calendar/api/eventsApi";
 
 export default function SchedulingPage() {
+  const navigate = useNavigate();
   const [isCalculated, setIsCalculated] = useState(false);
   const [results, setResults] = useState<MatchResult[]>([]);
+  const [meetingTitle, setMeetingTitle] = useState("");
 
-  // 매칭 엔진 가동 시뮬레이션 핸들러
-  const handleCalculate = (data: {
+  // 스마트 일정 조율 계산
+  const handleCalculate = async (data: {
     title: string;
     startDate: string;
     endDate: string;
   }) => {
-    // 결과 데이터 생성 시뮬레이션
-    setResults([
-      {
-        id: "1",
-        percent: "100",
-        date: data.startDate,
-        time: "오후 02:00 ~ 오후 04:00",
-        availableCount: 5,
-        totalCount: 5,
-      },
-      {
-        id: "2",
-        percent: "80",
-        date: data.endDate,
-        time: "오전 10:00 ~ 오후 12:00",
-        availableCount: 4,
-        totalCount: 5,
-      },
-      {
-        id: "3",
-        percent: "60",
-        date: data.startDate,
-        time: "오후 06:00 ~ 오후 08:00",
-        availableCount: 3,
-        totalCount: 5,
-      },
-    ]);
-    setIsCalculated(true);
+    try {
+      setMeetingTitle(data.title);
+      const dataResults = await schedulingApi.calculate({
+        title: data.title,
+        startDate: data.startDate,
+        endDate: data.endDate,
+      });
+      setResults(dataResults);
+      setIsCalculated(true);
+    } catch (error: any) {
+      console.error("일정 조율 분석 실패:", error);
+      alert("일정 조율 시간대를 분석하는 데 실패했습니다.");
+    }
   };
 
-  const handleConfirmTime = (res: MatchResult) => {
-    alert(`'${res.date} ${res.time}' 시간대로 일정을 확정합니다!`);
+  // 일정 조율 시간대 확정
+  const handleConfirmTime = async (res: MatchResult) => {
+    try {
+      await eventsApi.createEvent({
+        title: meetingTitle || "약속 조율 확정 일정",
+        startTime: res.startTime,
+        endTime: res.endTime,
+        location: "조율된 약속",
+        allDay: false,
+      });
+      alert(`'${res.date} ${res.time}' 시간대로 일정이 캘린더에 정상 등록되었습니다.`);
+      navigate("/calendar");
+    } catch (error: any) {
+      console.error("일정 등록 실패:", error);
+      alert("일정 확정 및 등록에 실패했습니다.");
+    }
   };
 
   return (

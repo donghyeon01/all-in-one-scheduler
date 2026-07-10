@@ -39,8 +39,7 @@ export default function EventModal({
       end,
       location,
     });
-
-    onClose();
+    // onClose는 부모(useCalendarModals)의 handleAddSubmit에서 API 완료 후 호출함
   };
 
   return (

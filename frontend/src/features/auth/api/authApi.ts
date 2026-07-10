@@ -15,6 +15,12 @@ export interface SignupRequest {
   password: string;
 }
 
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+}
+
 export const authApi = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     const response = await axiosInstance.post("/api/auth/login", data);
@@ -27,4 +33,10 @@ export const authApi = {
 
     return response.data;
   },
+
+  getMe: async (): Promise<User> => {
+    const response = await axiosInstance.get("/api/users/me");
+    return response.data;
+  },
 };
+

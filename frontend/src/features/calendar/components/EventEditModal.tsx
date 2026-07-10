@@ -49,7 +49,7 @@ export default function EventEditModal({
       end,
       location,
     });
-    onClose();
+    // onClose는 부모(useCalendarModals)의 handleEditSubmit에서 API 완료 후 호출함
   };
 
   return (

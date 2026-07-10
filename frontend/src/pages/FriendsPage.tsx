@@ -1,39 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@/shared/components/button/Button";
 import PageHeader from "@/shared/components/header/PageHeader";
 import FriendList from "@/features/friends/components/FriendList";
 import AddFriendModal from "@/features/friends/components/AddFriendModal";
-
-interface Friend {
-  id: string;
-  name: string;
-  email: string;
-}
+import { friendsApi, type Friend } from "@/features/friends/api/friendsApi";
 
 export default function FriendsPage() {
-  // mock 데이터 상태 관리
-  const [friends, setFriends] = useState<Friend[]>([
-    { id: "1", name: "김철수", email: "chulsoo@email.com" },
-    { id: "2", name: "이영희", email: "younghee@email.com" },
-    { id: "3", name: "박민수", email: "minsu@email.com" },
-  ]);
-
+  const [friends, setFriends] = useState<Friend[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // 친구 추가 핸들러
-  const handleAddFriend = (email: string) => {
-    const newFriend: Friend = {
-      id: crypto.randomUUID(),
-      name: email.split("@")[0] || "새로운 친구",
-      email: email,
-    };
+  // 친구 목록 로드 함수
+  const fetchFriends = async () => {
+    try {
+      const data = await friendsApi.getFriends();
+      setFriends(data);
+    } catch (error: any) {
+      console.error("친구 목록 조회 실패:", error);
+    }
+  };
 
-    setFriends([...friends, newFriend]);
+  useEffect(() => {
+    fetchFriends();
+  }, []);
+
+  // 친구 추가 핸들러
+  const handleAddFriend = async (email: string) => {
+    try {
+      await friendsApi.addFriend(email);
+      await fetchFriends();
+      setIsAddModalOpen(false);
+    } catch (error: any) {
+      console.error("친구 추가 실패:", error);
+      const message = error?.response?.data?.message || "친구 추가에 실패했습니다.";
+      alert(message);
+    }
   };
 
   // 친구 삭제 핸들러
-  const handleDeleteFriend = (id: string) => {
-    setFriends(friends.filter((friend) => friend.id !== id));
+  const handleDeleteFriend = async (id: string) => {
+    try {
+      await friendsApi.deleteFriend(id);
+      await fetchFriends();
+    } catch (error: any) {
+      console.error("친구 삭제 실패:", error);
+      const message = error?.response?.data?.message || "친구 삭제에 실패했습니다.";
+      alert(message);
+    }
   };
 
   return (

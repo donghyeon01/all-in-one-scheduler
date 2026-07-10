@@ -10,12 +10,14 @@ import com.devhyeon.scheduler.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
@@ -57,6 +59,8 @@ public class EventService {
                 request.getLocation(),
                 request.isAllDay()
         );
+
+        eventRepository.save(event);
     }
 
     public void deleteEvent(

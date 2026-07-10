@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useEventStore } from "../store/EventStore";
+import { eventsApi } from "../api/eventsApi";
 
 // JavaScript Date 객체를 <input type="datetime-local"> 에 맞는 YYYY-MM-DDTHH:mm 포맷으로 변환
 const formatToDateTimeLocal = (date: Date | null) => {
@@ -13,8 +14,14 @@ const formatToDateTimeLocal = (date: Date | null) => {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
+// ISO 8601 datetime-local 문자열을 백엔드 LocalDateTime 포맷(초까지)으로 변환
+const toBackendDateTime = (datetimeLocal: string) => {
+  if (!datetimeLocal) return "";
+  return datetimeLocal.length === 16 ? `${datetimeLocal}:00` : datetimeLocal;
+};
+
 export function useCalendarModals() {
-  const { addEvent, deleteEvent, updateEvent } = useEventStore();
+  const { setEvents } = useEventStore();
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -23,6 +30,16 @@ export function useCalendarModals() {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  // 서버에서 최신 이벤트 목록을 가져와 store 갱신
+  const refreshEvents = async () => {
+    try {
+      const data = await eventsApi.getEvents();
+      setEvents(data);
+    } catch (error) {
+      console.error("일정 새로고침 실패:", error);
+    }
+  };
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
@@ -45,9 +62,14 @@ export function useCalendarModals() {
     setIsConfirmDeleteOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (selectedEvent?.id) {
-      deleteEvent(selectedEvent.id);
+      try {
+        await eventsApi.deleteEvent(selectedEvent.id);
+        await refreshEvents();
+      } catch (error) {
+        console.error("일정 삭제 실패:", error);
+      }
     }
     setIsConfirmDeleteOpen(false);
     setSelectedEvent(null);
@@ -58,39 +80,48 @@ export function useCalendarModals() {
     setIsEditOpen(true);
   };
 
-  const handleEditSubmit = (data: {
+  const handleEditSubmit = async (data: {
     id: string;
     title: string;
     start: string;
     end: string;
     location: string;
   }) => {
-    updateEvent({
-      id: data.id,
-      title: data.title,
-      start: data.start,
-      end: data.end,
-      allDay: false,
-      location: data.location,
-    });
+    try {
+      await eventsApi.updateEvent(data.id, {
+        title: data.title,
+        startTime: toBackendDateTime(data.start),
+        endTime: toBackendDateTime(data.end),
+        location: data.location,
+        allDay: false,
+      });
+      await refreshEvents();
+    } catch (error) {
+      console.error("일정 수정 실패:", error);
+    }
     setIsEditOpen(false);
     setSelectedEvent(null);
   };
 
-  const handleAddSubmit = (data: {
+  const handleAddSubmit = async (data: {
     title: string;
     start: string;
     end: string;
     location: string;
   }) => {
-    addEvent({
-      id: crypto.randomUUID(),
-      title: data.title,
-      start: data.start,
-      end: data.end,
-      allDay: false,
-      location: data.location,
-    });
+    try {
+      await eventsApi.createEvent({
+        title: data.title,
+        startTime: toBackendDateTime(data.start),
+        endTime: toBackendDateTime(data.end),
+        location: data.location,
+        allDay: false,
+      });
+      await refreshEvents();
+    } catch (error) {
+      console.error("일정 추가 실패:", error);
+    }
+    setIsAddOpen(false);
   };
 
   return {

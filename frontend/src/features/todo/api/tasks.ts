@@ -1,20 +1,39 @@
-export const tasks = [
-  {
-    id: 1,
-    title: "JWT 인증 구현",
-    completed: true,
-    dueDate: "2026-07-20",
+import axiosInstance from "@/shared/api/axios";
+
+export interface Task {
+  id: number;
+  title: string;
+  completed: boolean;
+  dueDate: string;
+}
+
+export interface TaskCreateRequest {
+  title: string;
+  dueDate?: string;
+}
+
+export interface TaskUpdateRequest {
+  title: string;
+  completed: boolean;
+  dueDate?: string;
+}
+
+export const taskApi = {
+  getTasks: async (): Promise<Task[]> => {
+    const response = await axiosInstance.get("/api/tasks");
+    return response.data;
   },
-  {
-    id: 2,
-    title: "캘린더 API 연결",
-    completed: false,
-    dueDate: "2026-07-15",
+
+  createTask: async (data: TaskCreateRequest): Promise<void> => {
+    await axiosInstance.post("/api/tasks", data);
   },
-  {
-    id: 3,
-    title: "친구 시스템 구현",
-    completed: false,
-    dueDate: "2026-07-18",
+
+  updateTask: async (taskId: number, data: TaskUpdateRequest): Promise<void> => {
+    await axiosInstance.put(`/api/tasks/${taskId}`, data);
   },
-];
+
+  deleteTask: async (taskId: number): Promise<void> => {
+    await axiosInstance.delete(`/api/tasks/${taskId}`);
+  },
+};
+

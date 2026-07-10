@@ -1,20 +1,27 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/app/store/authStore";
+import axios from "axios";
 
 export default function LogoutButton() {
   const navigate = useNavigate();
-  // Zustand 스토어에서 logout 액션 가져오기
   const logout = useAuthStore((state) => state.logout);
 
-  const handleLogout = () => {
-    // 1. 전역 스토어 및 로컬스토리지 토큰 청소
-    logout();
-
-    // 2. 추가적으로 지워야 할 토큰 정보가 있다면 처리 후 이동
-    localStorage.removeItem("refreshToken");
-
-    // 3. 로그인 페이지로 안전하게 리다이렉트
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      // 1. 백엔드 /api/auth/logout 호출 → httpOnly 쿠키(refreshToken) 서버에서 삭제
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.warn("로그아웃 API 호출 실패 (무시됨):", error);
+    } finally {
+      // 2. 전역 메모리 상태(accessToken) 초기화
+      logout();
+      // 3. 랜딩 페이지로 이동
+      navigate("/");
+    }
   };
 
   return (
@@ -37,3 +44,4 @@ export default function LogoutButton() {
     </button>
   );
 }
+

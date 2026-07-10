@@ -15,11 +15,23 @@ public class JwtProvider {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
     public String generateToken(String email){
+        return generateAccessToken(email);
+    }
+    public String generateAccessToken(String email){
         long now = System.currentTimeMillis();
 
         return Jwts.builder().subject(email)
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + 1000L*60*30))
+                .expiration(new Date(now + 1000L*60*15)) // 15분
+                .signWith(secretKey)
+                .compact();
+    }
+    public String generateRefreshToken(String email){
+        long now = System.currentTimeMillis();
+
+        return Jwts.builder().subject(email)
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + 1000L*60*60*24*7)) // 7일
                 .signWith(secretKey)
                 .compact();
     }

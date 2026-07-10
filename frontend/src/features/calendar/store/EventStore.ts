@@ -7,10 +7,12 @@ export interface CalendarEvent {
   end: string;
   allDay: boolean;
   location?: string;
+  description?: string;
 }
 
 interface EventStore {
   events: CalendarEvent[];
+  setEvents: (events: CalendarEvent[]) => void;
   addEvent: (event: CalendarEvent) => void;
   deleteEvent: (id: string) => void;
   updateEvent: (event: CalendarEvent) => void;
@@ -18,6 +20,8 @@ interface EventStore {
 
 export const useEventStore = create<EventStore>((set) => ({
   events: [],
+
+  setEvents: (events) => set({ events }),
 
   addEvent: (event) =>
     set((state) => ({
@@ -36,3 +40,4 @@ export const useEventStore = create<EventStore>((set) => ({
       ),
     })),
 }));
+

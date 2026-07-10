@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CalendarView from "@/features/calendar/components/CalendarView";
 import PageHeader from "@/shared/components/header/PageHeader";
 import { useEventStore } from "@/features/calendar/store/EventStore";
@@ -7,10 +8,24 @@ import EventEditModal from "@/features/calendar/components/EventEditModal";
 import CalendarSidebar from "@/features/calendar/components/CalendarSidebar";
 import ConfirmModal from "@/shared/components/modal/ConfirmModal";
 import { useCalendarModals } from "@/features/calendar/hooks/useCalendarModals";
+import { eventsApi } from "@/features/calendar/api/eventsApi";
 
 export default function CalendarPage() {
-  const { events } = useEventStore();
+  const { events, setEvents } = useEventStore();
   const { state, actions } = useCalendarModals();
+
+  // 마운트 시 백엔드에서 일정 목록 로딩
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await eventsApi.getEvents();
+        setEvents(data);
+      } catch (error) {
+        console.error("일정 목록 로딩 실패:", error);
+      }
+    };
+    fetchEvents();
+  }, [setEvents]);
 
   return (
     <>
@@ -71,3 +86,4 @@ export default function CalendarPage() {
     </>
   );
 }
+
