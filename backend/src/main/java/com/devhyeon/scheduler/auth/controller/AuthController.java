@@ -25,69 +25,73 @@ public class AuthController {
     private final AuthService authService;
     private final JwtProvider jwtProvider;
 
-    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
         authService.signup(request);
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 로그인
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         TokenDto tokenDto = authService.login(request);
-
-        // Refresh Token 쿠키 설정 (httpOnly, Secure=false for local, SameSite=Lax)
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", tokenDto.getRefreshToken())
-                .httpOnly(true)
-                .secure(false) // 로컬 HTTP 환경 지원
-                .path("/")
-                .maxAge(7 * 24 * 60 * 60)
-                .sameSite("Lax")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
+        addRefreshTokenCookie(response, tokenDto.getRefreshToken());
         return ResponseEntity.ok(new LoginResponse(tokenDto.getAccessToken()));
     }
 
-    // Silent Refresh
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = extractRefreshToken(request);
+        if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("쿠키가 존재하지 않습니다.");
         }
 
-        String refreshToken = Arrays.stream(cookies)
-                .filter(c -> "refreshToken".equals(c.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
-
-        if (refreshToken == null || !jwtProvider.validateToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰입니다.");
+        try {
+            TokenDto tokenDto = authService.refreshToken(refreshToken);
+            addRefreshTokenCookie(response, tokenDto.getRefreshToken());
+            return ResponseEntity.ok(new LoginResponse(tokenDto.getAccessToken()));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
-
-        String email = jwtProvider.getEmail(refreshToken);
-        String newAccessToken = jwtProvider.generateAccessToken(email);
-
-        return ResponseEntity.ok(new LoginResponse(newAccessToken));
     }
 
-    // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
-        // Refresh Token 쿠키 만료 처리
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = extractRefreshToken(request);
+        authService.logout(refreshToken);
+
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(false)
+                .sameSite("None")
                 .path("/")
-                .maxAge(0) // 삭제
-                .sameSite("Lax")
+                .maxAge(0)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok("로그아웃 성공");
+    }
+
+    private void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("None")
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    private String extractRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        return Arrays.stream(cookies)
+                .filter(c -> "refreshToken".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
     }
 }
 

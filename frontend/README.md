@@ -125,6 +125,8 @@ npm run preview
 VITE_API_URL=http://localhost:8080
 ```
 
+프론트엔드는 백엔드와 분리된 도메인/포트에서 실행되므로 `withCredentials: true`를 사용하여 httpOnly Refresh Token 쿠키를 전송합니다.
+
 예시
 
 ```env
