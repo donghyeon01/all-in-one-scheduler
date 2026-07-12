@@ -6,6 +6,7 @@ import com.devhyeon.scheduler.scheduling.service.SchedulingService;
 import com.devhyeon.scheduler.security.details.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,11 @@ public class SchedulingController {
     private final SchedulingService schedulingService;
 
     @PostMapping
-    public List<SchedulingResponse> getOptimalSlots(
+    public ResponseEntity<List<SchedulingResponse>> getOptimalSlots(
             @RequestBody SchedulingRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return schedulingService.calculateOptimalSlots(userDetails.getUser(), request);
+        List<SchedulingResponse> result = schedulingService.calculateOptimalSlots(userDetails.getUser(), request);
+        return ResponseEntity.ok(result);
     }
 }

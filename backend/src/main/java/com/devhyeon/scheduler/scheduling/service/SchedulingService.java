@@ -18,6 +18,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -43,14 +46,41 @@ public class SchedulingService {
         // 2. 참여자들의 모든 이벤트 조회
         List<Event> allEvents = eventRepository.findByUserIn(participants);
 
+        // 사용자별 이벤트로 그룹화 (성능 최적화)
+        Map<Long, List<Event>> eventsByUser = new HashMap<>();
+        for (Event e : allEvents) {
+            if (e.getUser() != null && e.getUser().getId() != null) {
+                eventsByUser.computeIfAbsent(e.getUser().getId(), k -> new ArrayList<>()).add(e);
+            }
+        }
+
         // 3. 시간대 블록 설정 후보
-        // 하루에 검사할 시간 블록 목록 (시작시간, 종료시간, 표시명)
-        List<TimeBlockConfig> blockConfigs = List.of(
-                new TimeBlockConfig(LocalTime.of(10, 0), LocalTime.of(12, 0), "오전 10:00 ~ 오후 12:00"),
-                new TimeBlockConfig(LocalTime.of(14, 0), LocalTime.of(16, 0), "오후 02:00 ~ 오후 04:00"),
-                new TimeBlockConfig(LocalTime.of(18, 0), LocalTime.of(20, 0), "오후 06:00 ~ 오후 08:00"),
-                new TimeBlockConfig(LocalTime.of(20, 0), LocalTime.of(22, 0), "오후 08:00 ~ 오후 10:00")
-        );
+        List<TimeBlockConfig> blockConfigs;
+
+        if (request.getSlotMinutes() != null && request.getSlotMinutes() > 0) {
+            // Generate sliding time slots between 09:00 and 22:00 with given slot duration
+            int slot = request.getSlotMinutes();
+            List<TimeBlockConfig> generated = new ArrayList<>();
+            LocalTime windowStart = LocalTime.of(9, 0);
+            LocalTime windowEnd = LocalTime.of(22, 0);
+            LocalTime cursor = windowStart;
+            while (!cursor.plusMinutes(slot).isAfter(windowEnd)) {
+                LocalTime s = cursor;
+                LocalTime e = cursor.plusMinutes(slot);
+                String display = s.toString() + " ~ " + e.toString();
+                generated.add(new TimeBlockConfig(s, e, display));
+                cursor = cursor.plusMinutes(slot);
+            }
+            blockConfigs = List.copyOf(generated);
+        } else {
+            // 기본 고정 블록
+            blockConfigs = List.of(
+                    new TimeBlockConfig(LocalTime.of(10, 0), LocalTime.of(12, 0), "오전 10:00 ~ 오후 12:00"),
+                    new TimeBlockConfig(LocalTime.of(14, 0), LocalTime.of(16, 0), "오후 02:00 ~ 오후 04:00"),
+                    new TimeBlockConfig(LocalTime.of(18, 0), LocalTime.of(20, 0), "오후 06:00 ~ 오후 08:00"),
+                    new TimeBlockConfig(LocalTime.of(20, 0), LocalTime.of(22, 0), "오후 08:00 ~ 오후 10:00")
+            );
+        }
 
         List<SchedulingResponse> candidates = new ArrayList<>();
 
@@ -66,17 +96,17 @@ public class SchedulingService {
                 // 이 시간대에 참여 가능한 사람 수 계산
                 int availableCount = 0;
 
+                // 사용자별 이벤트 목록으로 그룹화하여 충돌 검사 비용을 줄임
                 for (User p : participants) {
                     boolean hasConflict = false;
 
+                    List<Event> userEvents = eventsByUser.getOrDefault(p.getId(), Collections.emptyList());
+
                     // 이 참여자의 스케줄 중 겹치는 일정이 있는지 검사
-                    for (Event e : allEvents) {
-                        if (e.getUser().getId().equals(p.getId())) {
-                            // 이벤트 겹침 기준: e.startTime < slotEnd && e.endTime > slotStart
-                            if (e.getStartTime().isBefore(slotEnd) && e.getEndTime().isAfter(slotStart)) {
-                                hasConflict = true;
-                                break;
-                            }
+                    for (Event e : userEvents) {
+                        if (e.getStartTime().isBefore(slotEnd) && e.getEndTime().isAfter(slotStart)) {
+                            hasConflict = true;
+                            break;
                         }
                     }
 
@@ -89,7 +119,7 @@ public class SchedulingService {
 
                 candidates.add(SchedulingResponse.builder()
                         .id(UUID.randomUUID().toString())
-                        .percent(String.valueOf(percent))
+                        .percent(percent)
                         .date(current.toString())
                         .time(config.displayName)
                         .availableCount(availableCount)
@@ -105,8 +135,8 @@ public class SchedulingService {
         candidates.sort(new Comparator<SchedulingResponse>() {
             @Override
             public int compare(SchedulingResponse o1, SchedulingResponse o2) {
-                int p1 = Integer.parseInt(o1.getPercent());
-                int p2 = Integer.parseInt(o2.getPercent());
+                int p1 = o1.getPercent();
+                int p2 = o2.getPercent();
                 if (p1 != p2) {
                     return Integer.compare(p2, p1); // 추천도 내림차순
                 }

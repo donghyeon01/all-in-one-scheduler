@@ -2,21 +2,21 @@ import { ResultCard } from "@/shared/components/card/ResultCard";
 
 const results = [
   {
-    percent: "100",
+    percent: 100,
     start: "",
     end: "",
     max: "",
     can: "",
   },
   {
-    percent: "100",
+    percent: 100,
     start: "",
     end: "",
     max: "",
     can: "",
   },
   {
-    percent: "100",
+    percent: 100,
     start: "",
     end: "",
     max: "",

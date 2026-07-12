@@ -2,6 +2,7 @@ package com.devhyeon.scheduler.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,9 @@ import com.devhyeon.scheduler.security.jwt.JwtProvider;
 @Configuration
 public class SecurityConfig {
 
+        @Value("${app.security.cors.allowed-origins}")
+        private List<String> allowedOrigins;
+
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
@@ -32,8 +36,7 @@ public class SecurityConfig {
 
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(
-                                List.of("http://localhost:5173"));
+                configuration.setAllowedOrigins(allowedOrigins);
 
                 configuration.setAllowedMethods(
                                 List.of("*"));
@@ -68,9 +71,9 @@ public class SecurityConfig {
                                                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
 
                                 .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                                "/api/auth/**").permitAll()
-                                                .anyRequest()
-                                                .authenticated())
+                                                "/api/auth/**",
+                                                "/api/health").permitAll()
+                                                .anyRequest()                                                .authenticated())
 
                                 .addFilterBefore(
                                                 new JwtFilter(

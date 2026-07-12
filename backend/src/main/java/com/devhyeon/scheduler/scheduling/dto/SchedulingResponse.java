@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class SchedulingResponse {
     private String id;
-    private String percent; // 예: "100"
+    private int percent; // 0-100
     private String date; // YYYY-MM-DD
     private String time; // 예: "오후 02:00 ~ 오후 04:00"
     private int availableCount;

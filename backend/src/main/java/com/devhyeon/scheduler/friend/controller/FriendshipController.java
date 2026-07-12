@@ -5,7 +5,10 @@ import com.devhyeon.scheduler.friend.dto.FriendResponse;
 import com.devhyeon.scheduler.friend.service.FriendshipService;
 import com.devhyeon.scheduler.security.details.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +26,20 @@ public class FriendshipController {
     }
 
     @PostMapping
-    public void addFriend(
-            @RequestBody FriendAddRequest request,
+    public ResponseEntity<Void> addFriend(
+            @Valid @RequestBody FriendAddRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         friendshipService.addFriend(userDetails.getUser(), request.getFriendEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{friendUserId}")
-    public void deleteFriend(
+    public ResponseEntity<Void> deleteFriend(
             @PathVariable Long friendUserId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         friendshipService.deleteFriend(userDetails.getUser(), friendUserId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -2,7 +2,7 @@ import axiosInstance from "@/shared/api/axios";
 
 export interface MatchResult {
   id: string;
-  percent: string;
+  percent: number;
   date: string;
   time: string;
   availableCount: number;

@@ -1,6 +1,6 @@
 export interface MatchResult {
   id: string;
-  percent: string;
+  percent: number;
   date: string;
   time: string;
   availableCount: number;

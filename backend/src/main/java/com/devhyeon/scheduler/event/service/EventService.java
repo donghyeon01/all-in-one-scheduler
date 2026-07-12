@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public class EventService {
     private final EventRepository eventRepository;
 
-    public void createEvent(
+    public EventResponse createEvent(
             EventCreateRequest request,
             User user
     ){
@@ -37,6 +37,7 @@ public class EventService {
                 .build();
 
         eventRepository.save(event);
+        return EventResponse.from(event);
     }
 
     public List<EventResponse> getEvents(User user){
@@ -45,7 +46,7 @@ public class EventService {
                 .toList();
     }
 
-    public void updateEvent(Long eventId, EventUpdateRequest request, User loginUser){
+    public EventResponse updateEvent(Long eventId, EventUpdateRequest request, User loginUser){
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없습니다."));
 
@@ -61,6 +62,7 @@ public class EventService {
         );
 
         eventRepository.save(event);
+        return EventResponse.from(event);
     }
 
     public void deleteEvent(

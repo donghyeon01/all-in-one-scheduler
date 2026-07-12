@@ -3,8 +3,13 @@ package com.devhyeon.scheduler.task.controller;
 import com.devhyeon.scheduler.security.details.CustomUserDetails;
 import com.devhyeon.scheduler.task.dto.*;
 import com.devhyeon.scheduler.task.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,36 +21,42 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // 할 일 생성
+    // 할 일 생성 - 201 Created
     @PostMapping
-    public void createTask(
-            @RequestBody TaskCreateRequest request,
+    public ResponseEntity<TaskResponse> createTask(
+            @Valid @RequestBody TaskCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        taskService.createTask(
-                request,
-                userDetails.getUser());
+        TaskResponse response = taskService.createTask(request, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 할일 가져오기
+    // 할일 가져오기 - 200 OK
     @GetMapping
-    public List<TaskResponse> getTasks(
+    public ResponseEntity<List<TaskResponse>> getTasks(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return taskService.getTasks(
-                userDetails.getUser());
+        return ResponseEntity.ok(taskService.getTasks(userDetails.getUser()));
     }
 
-    // 할 일 수정
+    // 할 일 수정 - 200 OK + 수정된 결과 반환
     @PutMapping("/{taskId}")
-    public void updateTask(@PathVariable Long taskId, @RequestBody TaskUpdateRequest request,
+    public ResponseEntity<TaskResponse> updateTask(
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        taskService.updateTask(taskId, request, userDetails.getUser());
+
+        TaskResponse response = taskService.updateTask(taskId, request, userDetails.getUser());
+        return ResponseEntity.ok(response);
     }
 
-    // 할 일 삭제
+    // 할 일 삭제 - 204 No Content
     @DeleteMapping("/{taskId}")
-    public void deleteTask(@PathVariable Long taskId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Void> deleteTask(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         taskService.deleteTask(taskId, userDetails.getUser());
+        return ResponseEntity.noContent().build();
     }
 }

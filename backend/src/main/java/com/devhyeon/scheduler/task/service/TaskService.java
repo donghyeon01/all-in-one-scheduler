@@ -23,7 +23,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     // CRUD - C
-    public void createTask(
+    public TaskResponse createTask(
             TaskCreateRequest request,
             User user) {
 
@@ -35,6 +35,7 @@ public class TaskService {
                 .build();
 
         taskRepository.save(task);
+        return TaskResponse.from(task);
     }
 
     // CRUD - R
@@ -47,7 +48,7 @@ public class TaskService {
     }
 
     // CRUD - U
-    public void updateTask(
+    public TaskResponse updateTask(
             Long taskId,
             TaskUpdateRequest request,
             User loginUser) {
@@ -58,6 +59,7 @@ public class TaskService {
         task.update(request.getTitle(), request.getDueDate(), request.isCompleted());
 
         taskRepository.save(task);
+        return TaskResponse.from(task);
     }
 
     public void deleteTask(Long taskId, User loginUser) {

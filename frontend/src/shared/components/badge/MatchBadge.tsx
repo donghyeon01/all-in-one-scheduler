@@ -1,5 +1,5 @@
 interface MatchBadgeProps {
-  percent: number | string;
+  percent: number;
 }
 
 export default function MatchBadge({ percent }: MatchBadgeProps) {
