@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,66 +19,56 @@ import java.util.List;
 @RequestMapping("/api/events")
 @RequiredArgsConstructor
 public class EventController {
-    private final EventService eventService;
+        private final EventService eventService;
 
-    @PostMapping
-    public ResponseEntity<EventResponse> createEvent(
-            @Valid @RequestBody EventCreateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails){
-        
-        EventResponse response = eventService.createEvent(
-                request,
-                userDetails.getUser()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+        @PostMapping
+        public ResponseEntity<EventResponse> createEvent(
+                        @Valid @RequestBody EventCreateRequest request,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-    @GetMapping
-    public ResponseEntity<List<EventResponse>> getEvents(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        return ResponseEntity.ok(eventService.getEvents(
-                userDetails.getUser()
-        ));
-    }
+                EventResponse response = eventService.createEvent(
+                                request,
+                                userDetails.getUser());
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
-    @GetMapping("/range")
-    public ResponseEntity<List<EventResponse>> getEventsByRange(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        return ResponseEntity.ok(eventService.getEventsByRange(
-                userDetails.getUser(),
-                start,
-                end
-        ));
-    }
+        @GetMapping
+        public ResponseEntity<List<EventResponse>> getEvents(
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+                return ResponseEntity.ok(eventService.getEvents(
+                                userDetails.getUser()));
+        }
 
-    @PutMapping("/{eventId}")
-    public ResponseEntity<EventResponse> updateEvent(
-            @PathVariable Long eventId,
-            @Valid @RequestBody EventUpdateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        EventResponse response = eventService.updateEvent(
-                eventId,
-                request,
-                userDetails.getUser()
-        );
-        return ResponseEntity.ok(response);
-    }
+        @GetMapping("/range")
+        public ResponseEntity<List<EventResponse>> getEventsByRange(
+                        @RequestParam LocalDateTime start,
+                        @RequestParam LocalDateTime end,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+                return ResponseEntity.ok(eventService.getEventsByRange(
+                                userDetails.getUser(),
+                                start,
+                                end));
+        }
 
-    @DeleteMapping("/{eventId}")
-    public ResponseEntity<Void> deleteEvent(
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        eventService.deleteEvent(
-                eventId,
-                userDetails.getUser()
-        );
-        return ResponseEntity.noContent().build();
-    }
+        @PutMapping("/{eventId}")
+        public ResponseEntity<EventResponse> updateEvent(
+                        @PathVariable Long eventId,
+                        @Valid @RequestBody EventUpdateRequest request,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+                EventResponse response = eventService.updateEvent(
+                                eventId,
+                                request,
+                                userDetails.getUser());
+                return ResponseEntity.ok(response);
+        }
+
+        @DeleteMapping("/{eventId}")
+        public ResponseEntity<Void> deleteEvent(
+                        @PathVariable Long eventId,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+                eventService.deleteEvent(
+                                eventId,
+                                userDetails.getUser());
+                return ResponseEntity.noContent().build();
+        }
 }
-

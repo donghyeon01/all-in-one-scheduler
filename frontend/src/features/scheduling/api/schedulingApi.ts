@@ -34,10 +34,17 @@ export const schedulingApi = {
   // 추가: 컴포넌트에서 친구들을 불러와서 보여주기 위한 API 함수
   getFriends: async (): Promise<FriendUser[]> => {
     // 실제 엔드포인트에 맞게 수정 필요 (예: /api/friends 또는 /api/friendships)
-    const response = await axiosInstance.get("/api/friends");
-    return response.data.map((item: any) => ({
-      id: item.friend?.id || item.id,
-      name: item.friend?.name || item.name,
+    interface FriendResponse {
+      id?: number;
+      name?: string;
+      email?: string;
+      friend?: { id?: number; name?: string; email?: string };
+    }
+    const response = await axiosInstance.get<FriendResponse[]>("/api/friends");
+    return response.data.map((item) => ({
+      id: item.friend?.id ?? item.id ?? 0,
+      name: item.friend?.name ?? item.name ?? "",
+      email: item.friend?.email ?? item.email,
     }));
   },
 };

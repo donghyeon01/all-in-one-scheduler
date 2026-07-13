@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { authApi } from "@/features/auth/api/authApi";
 
 interface SignupFormProps {
@@ -28,10 +29,11 @@ export default function SignupForm({
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       if (onSwitchToLogin) onSwitchToLogin();
       else if (onClose) onClose();
-    } catch (error: any) {
-      const message =
-        error?.response?.data?.message ?? "회원가입에 실패했습니다. 다시 시도해주세요.";
-      alert(message);
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data as { message?: string } | undefined)?.message
+        : undefined;
+      alert(message ?? "회원가입에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

@@ -1,11 +1,13 @@
 import Card from "@/shared/components/card/Card";
-import { useEventStore } from "../store/EventStore";
+import type { CalendarEvent } from "../api/eventsApi";
 
-export default function CalendarSidebar() {
-  const { events } = useEventStore();
+interface CalendarSidebarProps {
+  events: CalendarEvent[];
+}
 
-  // 1. 이번 주 일정 개수 계산 (현재 기준 7일 이내 일정 계산)
-  const now = new Date("2026-07-07"); // 시스템 기준 고정 타임라인 반영
+export default function CalendarSidebar({ events }: CalendarSidebarProps) {
+  // 1. 이번 주 일정 개수 계산 (현재 시각 기준 7일 이내 일정 계산)
+  const now = new Date();
   const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
   const thisWeekEvents = events.filter((event) => {
@@ -36,7 +38,7 @@ export default function CalendarSidebar() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       <Card>
         <h3 className="font-black text-text">📅 이번 주 일정</h3>
         <p className="mt-2 text-sm font-bold text-slate-500">

@@ -1,5 +1,8 @@
 import axiosInstance from "@/shared/api/axios";
 
+// react-query 캐시 키 (CalendarPage/CalendarSidebar 등에서 동일 키로 조회/무효화)
+export const EVENTS_QUERY_KEY = ["events"] as const;
+
 // 프론트엔드 내부/FullCalendar에서 사용하는 인터페이스
 export interface CalendarEvent {
   id: string;
@@ -29,10 +32,21 @@ export interface EventUpdateRequest {
   allDay: boolean;
 }
 
+// 백엔드 EventResponse DTO 형태 (필드명이 프론트엔드 CalendarEvent와 다름)
+interface EventApiResponse {
+  id: number | string;
+  title: string;
+  startTime: string;
+  endTime: string;
+  allDay: boolean;
+  location?: string;
+  description?: string;
+}
+
 export const eventsApi = {
   getEvents: async (): Promise<CalendarEvent[]> => {
-    const response = await axiosInstance.get("/api/events");
-    return response.data.map((item: any) => ({
+    const response = await axiosInstance.get<EventApiResponse[]>("/api/events");
+    return response.data.map((item) => ({
       id: String(item.id),
       title: item.title,
       start: item.startTime,
@@ -47,7 +61,10 @@ export const eventsApi = {
     await axiosInstance.post("/api/events", data);
   },
 
-  updateEvent: async (eventId: string | number, data: EventUpdateRequest): Promise<void> => {
+  updateEvent: async (
+    eventId: string | number,
+    data: EventUpdateRequest,
+  ): Promise<void> => {
     await axiosInstance.put(`/api/events/${eventId}`, data);
   },
 

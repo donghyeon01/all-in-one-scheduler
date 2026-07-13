@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAuthStore } from "@/app/store/authStore";
 import { authApi } from "../api/authApi";
 
@@ -33,10 +34,12 @@ export default function LoginForm({
 
       if (onClose) onClose();
       navigate("/todo");
-    } catch (error: any) {
+    } catch (error) {
       console.error("로그인 실패:", error);
-      const message = error?.response?.data?.message || "이메일 또는 비밀번호가 올바르지 않습니다.";
-      alert(message);
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data as { message?: string } | undefined)?.message
+        : undefined;
+      alert(message || "이메일 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 

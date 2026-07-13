@@ -2,12 +2,13 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import type { CalendarEvent } from "../store/EventStore";
+import type { EventApi } from "@fullcalendar/core";
+import type { CalendarEvent } from "../api/eventsApi";
 
 interface Props {
   events: CalendarEvent[];
   onDateClick: (date: string) => void;
-  onEventClick: (event: any) => void;
+  onEventClick: (event: EventApi) => void;
 }
 
 export default function CalendarView({

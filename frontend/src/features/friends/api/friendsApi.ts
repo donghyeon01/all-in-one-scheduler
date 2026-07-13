@@ -10,8 +10,8 @@ export interface Friend {
 export const friendsApi = {
   // 현재 정식 친구 목록 조회
   getFriends: async (): Promise<Friend[]> => {
-    const response = await axiosInstance.get("/api/friends");
-    return response.data.map((item: any) => ({
+    const response = await axiosInstance.get<Friend[]>("/api/friends");
+    return response.data.map((item) => ({
       id: String(item.id),
       friendUserId: item.friendUserId,
       name: item.name,
@@ -21,8 +21,10 @@ export const friendsApi = {
 
   // 나한테 온 친구 요청 목록 조회
   getReceivedRequests: async (): Promise<Friend[]> => {
-    const response = await axiosInstance.get("/api/friends/requests/received");
-    return response.data.map((item: any) => ({
+    const response = await axiosInstance.get<Friend[]>(
+      "/api/friends/requests/received",
+    );
+    return response.data.map((item) => ({
       id: String(item.id),
       friendUserId: item.friendUserId,
       name: item.name,
@@ -32,8 +34,10 @@ export const friendsApi = {
 
   // 내가 보낸 친구 요청 목록 조회
   getSentRequests: async (): Promise<Friend[]> => {
-    const response = await axiosInstance.get("/api/friends/requests/sent");
-    return response.data.map((item: any) => ({
+    const response = await axiosInstance.get<Friend[]>(
+      "/api/friends/requests/sent",
+    );
+    return response.data.map((item) => ({
       id: String(item.id),
       friendUserId: item.friendUserId,
       name: item.name,

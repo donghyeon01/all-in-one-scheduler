@@ -32,7 +32,7 @@ export default function SchedulingPage() {
       });
       setResults(dataResults);
       setIsCalculated(true);
-    } catch (error: any) {
+    } catch (error) {
       console.error("일정 조율 분석 실패:", error);
       alert("일정 조율 시간대를 분석하는 데 실패했습니다.");
     }
@@ -52,7 +52,7 @@ export default function SchedulingPage() {
         `'${res.date} ${res.time}' 시간대로 일정이 캘린더에 정상 등록되었습니다.`,
       );
       navigate("/calendar");
-    } catch (error: any) {
+    } catch (error) {
       console.error("일정 등록 실패:", error);
       alert("일정 확정 및 등록에 실패했습니다.");
     }

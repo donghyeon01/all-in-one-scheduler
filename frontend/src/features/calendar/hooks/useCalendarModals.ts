@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { useEventStore } from "../store/EventStore";
-import { eventsApi } from "../api/eventsApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { EventApi } from "@fullcalendar/core";
+import {
+  EVENTS_QUERY_KEY,
+  eventsApi,
+  type CalendarEvent,
+} from "../api/eventsApi";
 
 // JavaScript Date 객체를 <input type="datetime-local"> 에 맞는 YYYY-MM-DDTHH:mm 포맷으로 변환
 const formatToDateTimeLocal = (date: Date | null) => {
@@ -21,7 +26,7 @@ const toBackendDateTime = (datetimeLocal: string) => {
 };
 
 export function useCalendarModals() {
-  const { setEvents } = useEventStore();
+  const queryClient = useQueryClient();
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -29,17 +34,37 @@ export function useCalendarModals() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null,
+  );
 
-  // 서버에서 최신 이벤트 목록을 가져와 store 갱신
-  const refreshEvents = async () => {
-    try {
-      const data = await eventsApi.getEvents();
-      setEvents(data);
-    } catch (error) {
-      console.error("일정 새로고침 실패:", error);
-    }
-  };
+  // 캐시 무효화 → CalendarPage/CalendarSidebar 등 EVENTS_QUERY_KEY를 구독 중인 곳들이 자동 재조회됨
+  const invalidateEvents = () =>
+    queryClient.invalidateQueries({ queryKey: EVENTS_QUERY_KEY });
+
+  const createEventMutation = useMutation({
+    mutationFn: eventsApi.createEvent,
+    onSuccess: invalidateEvents,
+    onError: (error) => console.error("일정 추가 실패:", error),
+  });
+
+  const updateEventMutation = useMutation({
+    mutationFn: ({
+      eventId,
+      data,
+    }: {
+      eventId: string;
+      data: Parameters<typeof eventsApi.updateEvent>[1];
+    }) => eventsApi.updateEvent(eventId, data),
+    onSuccess: invalidateEvents,
+    onError: (error) => console.error("일정 수정 실패:", error),
+  });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: eventsApi.deleteEvent,
+    onSuccess: invalidateEvents,
+    onError: (error) => console.error("일정 삭제 실패:", error),
+  });
 
   const handleDateClick = (date: string) => {
     // date가 "2026-07-13" 형태로 들어오면 현재 시간 또는 기본값(예: 오전 09:00)을 붙여서 포맷팅합니다.
@@ -48,14 +73,15 @@ export function useCalendarModals() {
     setIsAddOpen(true);
   };
 
-  const handleEventClick = (event: any) => {
+  const handleEventClick = (event: EventApi) => {
     setSelectedEvent({
       id: event.id,
-      title: event.title,
+      title: event.title || "",
       start: formatToDateTimeLocal(event.start),
       end:
         formatToDateTimeLocal(event.end) || formatToDateTimeLocal(event.start),
-      location: event.extendedProps?.location || "",
+      location: (event.extendedProps?.location as string) || "",
+      allDay: event.allDay,
     });
     setIsDetailOpen(true);
   };
@@ -65,14 +91,9 @@ export function useCalendarModals() {
     setIsConfirmDeleteOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (selectedEvent?.id) {
-      try {
-        await eventsApi.deleteEvent(selectedEvent.id);
-        await refreshEvents();
-      } catch (error) {
-        console.error("일정 삭제 실패:", error);
-      }
+      deleteEventMutation.mutate(selectedEvent.id);
     }
     setIsConfirmDeleteOpen(false);
     setSelectedEvent(null);
@@ -83,47 +104,40 @@ export function useCalendarModals() {
     setIsEditOpen(true);
   };
 
-  const handleEditSubmit = async (data: {
+  const handleEditSubmit = (data: {
     id: string;
     title: string;
     start: string;
     end: string;
     location: string;
   }) => {
-    try {
-      await eventsApi.updateEvent(data.id, {
+    updateEventMutation.mutate({
+      eventId: data.id,
+      data: {
         title: data.title,
         startTime: toBackendDateTime(data.start),
         endTime: toBackendDateTime(data.end),
         location: data.location,
         allDay: false,
-      });
-      await refreshEvents();
-    } catch (error) {
-      console.error("일정 수정 실패:", error);
-    }
+      },
+    });
     setIsEditOpen(false);
     setSelectedEvent(null);
   };
 
-  const handleAddSubmit = async (data: {
+  const handleAddSubmit = (data: {
     title: string;
     start: string;
     end: string;
     location: string;
   }) => {
-    try {
-      await eventsApi.createEvent({
-        title: data.title,
-        startTime: toBackendDateTime(data.start),
-        endTime: toBackendDateTime(data.end),
-        location: data.location,
-        allDay: false,
-      });
-      await refreshEvents();
-    } catch (error) {
-      console.error("일정 추가 실패:", error);
-    }
+    createEventMutation.mutate({
+      title: data.title,
+      startTime: toBackendDateTime(data.start),
+      endTime: toBackendDateTime(data.end),
+      location: data.location,
+      allDay: false,
+    });
     setIsAddOpen(false);
   };
 

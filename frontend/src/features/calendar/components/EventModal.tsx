@@ -1,7 +1,7 @@
 import Button from "@/shared/components/button/Button";
 import Input from "@/shared/components/ui/Input";
 import Modal from "@/shared/components/modal/Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   open: boolean;
@@ -21,29 +21,19 @@ export default function EventModal({
   onClose,
   onSubmit,
 }: Props) {
+  // 모달이 열릴 때 props(selectedDate)를 기반으로 초기 상태를 계산
+  const getInitialEnd = (date: string) => {
+    if (!date) return "";
+    const startDateObj = new Date(date);
+    startDateObj.setHours(startDateObj.getHours() + 1);
+    const pad = (num: number) => String(num).padStart(2, "0");
+    return `${startDateObj.getFullYear()}-${pad(startDateObj.getMonth() + 1)}-${pad(startDateObj.getDate())}T${pad(startDateObj.getHours())}:${pad(startDateObj.getMinutes())}`;
+  };
+
   const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [start, setStart] = useState(selectedDate);
+  const [end, setEnd] = useState(() => getInitialEnd(selectedDate));
   const [location, setLocation] = useState("");
-
-  // 모달이 열릴 때 부모의 날짜 정보를 기반으로 상태 초기화 및 자동 1시간 뒤 세팅
-  useEffect(() => {
-    if (open) {
-      setTitle("");
-      setStart(selectedDate);
-      setLocation("");
-
-      if (selectedDate) {
-        const startDateObj = new Date(selectedDate);
-        startDateObj.setHours(startDateObj.getHours() + 1);
-        const pad = (num: number) => String(num).padStart(2, "0");
-        const nextHourStr = `${startDateObj.getFullYear()}-${pad(startDateObj.getMonth() + 1)}-${pad(startDateObj.getDate())}T${pad(startDateObj.getHours())}:${pad(startDateObj.getMinutes())}`;
-        setEnd(nextHourStr);
-      } else {
-        setEnd(selectedDate);
-      }
-    }
-  }, [open, selectedDate]);
 
   // 사용자가 시작 시간을 직접 바꿀 때도 종료 시간을 지능적으로 한 시간 뒤로 밀어줌
   const handleStartChange = (newStart: string) => {

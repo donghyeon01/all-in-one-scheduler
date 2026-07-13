@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+﻿import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/app/store/authStore";
 
 const axiosInstance = axios.create({
@@ -12,10 +12,10 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
-  reject: (error: any) => void;
+  reject: (error: unknown) => void;
 }> = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((promise) => {
     if (error) {
       promise.reject(error);
@@ -26,11 +26,11 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
-const attachToken = (config: any, token: string) => {
-  config.headers = {
-    ...config.headers,
-    Authorization: `Bearer ${token}`,
-  };
+const attachToken = (
+  config: InternalAxiosRequestConfig,
+  token: string,
+): InternalAxiosRequestConfig => {
+  config.headers.set("Authorization", `Bearer ${token}`);
   return config;
 };
 
@@ -50,10 +50,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
 
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as
+      | (InternalAxiosRequestConfig & { _retry?: boolean })
+      | undefined;
 
     if (
+      originalRequest &&
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url &&
@@ -74,7 +77,7 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.post(
+        const response = await axios.post<{ accessToken: string }>(
           `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
           {},
           { withCredentials: true },

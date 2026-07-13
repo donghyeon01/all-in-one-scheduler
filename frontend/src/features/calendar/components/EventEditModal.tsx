@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/shared/components/button/Button";
 import Input from "@/shared/components/ui/Input";
 import Modal from "@/shared/components/modal/Modal";
-import type { CalendarEvent } from "../store/EventStore";
+import type { CalendarEvent } from "../api/eventsApi";
 
 interface Props {
   open: boolean;
@@ -23,20 +23,10 @@ export default function EventEditModal({
   onClose,
   onSubmit,
 }: Props) {
-  const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
-  const [location, setLocation] = useState("");
-
-  // 모달이 열리거나 타겟 일정이 바뀔 때 로컬 스테이트 초기화
-  useEffect(() => {
-    if (event) {
-      setTitle(event.title);
-      setStart(event.start || "");
-      setEnd(event.end || "");
-      setLocation(event.location || "");
-    }
-  }, [event, open]);
+  const [title, setTitle] = useState(event?.title ?? "");
+  const [start, setStart] = useState(event?.start ?? "");
+  const [end, setEnd] = useState(event?.end ?? "");
+  const [location, setLocation] = useState(event?.location ?? "");
 
   if (!event) return null;
 

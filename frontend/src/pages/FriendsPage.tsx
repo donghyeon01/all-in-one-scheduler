@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import Button from "@/shared/components/button/Button";
 import PageHeader from "@/shared/components/header/PageHeader";
 import FriendList from "@/features/friends/components/FriendList";
 import AddFriendModal from "@/features/friends/components/AddFriendModal";
 import Modal from "@/shared/components/modal/Modal";
-import { friendsApi, type Friend } from "@/features/friends/api/friendsApi";
+import { friendsApi } from "@/features/friends/api/friendsApi";
+
+// react-query 캐시 키 (친구/받은요청/보낸요청을 하나의 키 묶음으로 관리)
+const FRIENDS_QUERY_KEY = ["friends"] as const;
 
 export default function FriendsPage() {
-  // 데이터 상태 관리
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [receivedRequests, setReceivedRequests] = useState<Friend[]>([]);
-  const [sentRequests, setSentRequests] = useState<Friend[]>([]);
+  const queryClient = useQueryClient();
 
   // 모달 제어 상태
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -27,37 +29,42 @@ export default function FriendsPage() {
     }, 1000); // 1초 뒤 자동 소멸
   };
 
-  // 모든 친구 관련 데이터 통합 로드
-  const fetchAllFriendData = async () => {
-    try {
+  // 친구 목록 / 받은 요청 / 보낸 요청을 하나의 쿼리로 통합 조회 (기존 useEffect + Promise.all 패턴을 대체)
+  const { data, isLoading } = useQuery({
+    queryKey: FRIENDS_QUERY_KEY,
+    queryFn: async () => {
       const [friendsData, receivedData, sentData] = await Promise.all([
         friendsApi.getFriends(),
         friendsApi.getReceivedRequests(),
         friendsApi.getSentRequests(),
       ]);
-      setFriends(friendsData);
-      setReceivedRequests(receivedData);
-      setSentRequests(sentData);
-    } catch (error) {
-      console.error("데이터 로드 실패:", error);
-    }
-  };
+      return {
+        friends: friendsData,
+        receivedRequests: receivedData,
+        sentRequests: sentData,
+      };
+    },
+  });
 
-  useEffect(() => {
-    fetchAllFriendData();
-  }, []);
+  const friends = data?.friends ?? [];
+  const receivedRequests = data?.receivedRequests ?? [];
+  const sentRequests = data?.sentRequests ?? [];
 
-  // 친구 요청 보내기 핸들러
-  const handleAddFriend = async (email: string) => {
-    try {
-      await friendsApi.addFriend(email);
+  const invalidateFriends = () =>
+    queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEY });
+
+  // 친구 요청 보내기 mutation
+  const addFriendMutation = useMutation({
+    mutationFn: friendsApi.addFriend,
+    onSuccess: () => {
       showToast("친구 요청을 보냈습니다.");
-      fetchAllFriendData();
+      invalidateFriends();
       setIsAddModalOpen(false);
-    } catch (error: any) {
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
       console.error("친구 요청 실패:", error);
-      const status = error?.response?.status;
-      const serverMessage = error?.response?.data?.message;
+      const status = error.response?.status;
+      const serverMessage = error.response?.data?.message;
 
       if (status === 404 || serverMessage === "존재하지 않는 유저입니다.") {
         alert("존재하지 않는 유저입니다.");
@@ -66,41 +73,44 @@ export default function FriendsPage() {
       } else {
         alert("서버 오류입니다.");
       }
-    }
-  };
+    },
+  });
+  const handleAddFriend = (email: string) => addFriendMutation.mutate(email);
 
-  // 친구 요청 수락 핸들러
-  const handleAcceptFriend = async (friendshipId: string) => {
-    try {
-      await friendsApi.acceptFriendRequest(friendshipId);
+  // 친구 요청 수락 mutation
+  const acceptFriendMutation = useMutation({
+    mutationFn: friendsApi.acceptFriendRequest,
+    onSuccess: () => {
       showToast("수락했습니다.");
-      fetchAllFriendData();
-    } catch (error) {
+      invalidateFriends();
+    },
+    onError: (error) => {
       console.error("수락 실패:", error);
       alert("요청 수락에 실패했습니다.");
-    }
-  };
+    },
+  });
+  const handleAcceptFriend = (friendshipId: string) =>
+    acceptFriendMutation.mutate(friendshipId);
 
-  // 친구 삭제 / 요청 거절 / 요청 취소 수행 핸들러
-  const handleConfirmDelete = async () => {
-    if (!deleteTargetId) return;
-    try {
-      await friendsApi.deleteFriend(deleteTargetId);
-
-      // 대상이 현재 정식 친구 목록에 있었는지 판단하여 토스트 팝업 분기
-      const isReceived = receivedRequests.some((r) => r.id === deleteTargetId);
-      if (isReceived) {
-        showToast("거절했습니다.");
-      } else {
-        showToast("삭제되었습니다.");
-      }
-
+  // 친구 삭제 / 요청 거절 / 요청 취소 mutation
+  const deleteFriendMutation = useMutation({
+    mutationFn: friendsApi.deleteFriend,
+    onSuccess: (_data, friendshipId) => {
+      // 대상이 현재 받은 요청 목록에 있었는지 판단하여 토스트 팝업 분기
+      const isReceived = receivedRequests.some((r) => r.id === friendshipId);
+      showToast(isReceived ? "거절했습니다." : "삭제되었습니다.");
       setDeleteTargetId(null);
-      fetchAllFriendData();
-    } catch (error) {
+      invalidateFriends();
+    },
+    onError: (error) => {
       console.error("삭제 실패:", error);
       alert("처리에 실패했습니다.");
-    }
+    },
+  });
+
+  const handleConfirmDelete = () => {
+    if (!deleteTargetId) return;
+    deleteFriendMutation.mutate(deleteTargetId);
   };
 
   return (
@@ -117,6 +127,12 @@ export default function FriendsPage() {
         description="친구를 추가하고 약속을 함께 조율해 보세요.">
         <Button onClick={() => setIsAddModalOpen(true)}>+ 친구 추가</Button>
       </PageHeader>
+
+      {isLoading && (
+        <p className="mt-6 text-sm font-bold text-slate-400">
+          친구 목록을 불러오는 중입니다...
+        </p>
+      )}
 
       {/* 레이아웃 분할: 좌측(현재 친구 목록) | 우측(나한테 온 요청 / 내가 보낸 요청) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">

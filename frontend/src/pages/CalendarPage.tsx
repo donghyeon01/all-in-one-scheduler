@@ -1,31 +1,56 @@
-import { useEffect } from "react";
 import CalendarView from "@/features/calendar/components/CalendarView";
 import PageHeader from "@/shared/components/header/PageHeader";
-import { useEventStore } from "@/features/calendar/store/EventStore";
 import EventModal from "@/features/calendar/components/EventModal";
 import EventDetailModal from "@/features/calendar/components/EventDetailModal";
 import EventEditModal from "@/features/calendar/components/EventEditModal";
 import CalendarSidebar from "@/features/calendar/components/CalendarSidebar";
 import ConfirmModal from "@/shared/components/modal/ConfirmModal";
 import { useCalendarModals } from "@/features/calendar/hooks/useCalendarModals";
-import { eventsApi } from "@/features/calendar/api/eventsApi";
+import { eventsApi, EVENTS_QUERY_KEY } from "@/features/calendar/api/eventsApi";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CalendarPage() {
-  const { events, setEvents } = useEventStore();
   const { state, actions } = useCalendarModals();
 
-  // 마운트 시 백엔드에서 일정 목록 로딩
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await eventsApi.getEvents();
-        setEvents(data);
-      } catch (error) {
-        console.error("일정 목록 로딩 실패:", error);
-      }
-    };
-    fetchEvents();
-  }, [setEvents]);
+  // react-query로 일정 목록 조회
+  const {
+    data: events = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: EVENTS_QUERY_KEY,
+    queryFn: eventsApi.getEvents,
+  });
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="캘린더 관리"
+          description="내 일정과 모임 스케줄을 한눈에 확인하세요."
+        />
+
+        <div className="p-6 text-center text-slate-500">
+          일정을 불러오는 중입니다...
+        </div>
+      </>
+    );
+  }
+
+  if (isError) {
+    return (
+      <>
+        <PageHeader
+          title="캘린더 관리"
+          description="내 일정과 모임 스케줄을 한눈에 확인하세요."
+        />
+
+        <div className="p-6 text-center text-red-500">
+          일정을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -37,7 +62,7 @@ export default function CalendarPage() {
       <div className="grid gap-6 lg:grid-cols-4">
         {/* 사이드바 영역 */}
         <div className="lg:col-span-1">
-          <CalendarSidebar />
+          <CalendarSidebar events={events} />
         </div>
 
         {/* 메인 캘린더 영역 */}
@@ -52,6 +77,7 @@ export default function CalendarPage() {
 
       {/* 일정 추가 모달 */}
       <EventModal
+        key={state.isAddOpen ? state.selectedDate : "closed"}
         open={state.isAddOpen}
         selectedDate={state.selectedDate}
         onClose={() => actions.setIsAddOpen(false)}
@@ -69,6 +95,7 @@ export default function CalendarPage() {
 
       {/* 일정 수정 모달 */}
       <EventEditModal
+        key={state.isEditOpen ? (state.selectedEvent?.id ?? "edit") : "closed"}
         open={state.isEditOpen}
         event={state.selectedEvent}
         onClose={() => actions.setIsEditOpen(false)}
@@ -86,4 +113,3 @@ export default function CalendarPage() {
     </>
   );
 }
-
