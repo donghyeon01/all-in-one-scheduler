@@ -3,6 +3,7 @@ package com.devhyeon.scheduler.scheduling.service;
 import com.devhyeon.scheduler.event.entity.Event;
 import com.devhyeon.scheduler.event.repository.EventRepository;
 import com.devhyeon.scheduler.friend.entity.Friendship;
+import com.devhyeon.scheduler.friend.entity.FriendshipStatus; // 추가된 패키지 확인
 import com.devhyeon.scheduler.friend.repository.FriendshipRepository;
 import com.devhyeon.scheduler.scheduling.dto.SchedulingRequest;
 import com.devhyeon.scheduler.scheduling.dto.SchedulingResponse;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -32,21 +32,34 @@ public class SchedulingService {
     private final EventRepository eventRepository;
 
     public List<SchedulingResponse> calculateOptimalSlots(User user, SchedulingRequest request) {
-        // 1. 참여자 목록 구성 (본인 + 모든 친구)
+        // 1. 참여자 목록 구성 (본인은 항상 포함)
         List<User> participants = new ArrayList<>();
         participants.add(user);
 
-        List<Friendship> friendships = friendshipRepository.findByUser(user);
-        for (Friendship friendship : friendships) {
-            participants.add(friendship.getFriend());
+        // 수정 반영: 수락된(ACCEPTED) 상태의 정식 친구 목록만 조회해 옵니다.
+        List<Friendship> acceptedFriendships = friendshipRepository.findByUserAndStatus(user, FriendshipStatus.ACCEPTED);
+
+        if (request.getFriendIds() != null && !request.getFriendIds().isEmpty()) {
+            // 사용자가 화면에서 특정 친구들을 체크(선택)한 경우 -> 선택된 친구만 필터링하여 참여자에 추가
+            for (Friendship f : acceptedFriendships) {
+                User friend = f.getFriend();
+                if (request.getFriendIds().contains(friend.getId())) {
+                    participants.add(friend);
+                }
+            }
+        } else {
+            // 만약 화면에서 아무도 선택하지 않았다면, 기본 동작으로 정식 친구 전원을 참여자로 지정
+            for (Friendship f : acceptedFriendships) {
+                participants.add(f.getFriend());
+            }
         }
 
         int totalCount = participants.size();
 
-        // 2. 참여자들의 모든 이벤트 조회
+        // 2. 참여자들의 모든 스케줄(이벤트) 조회
         List<Event> allEvents = eventRepository.findByUserIn(participants);
 
-        // 사용자별 이벤트로 그룹화 (성능 최적화)
+        // 사용자별 이벤트로 그룹화 (충돌 검사 성능 최적화)
         Map<Long, List<Event>> eventsByUser = new HashMap<>();
         for (Event e : allEvents) {
             if (e.getUser() != null && e.getUser().getId() != null) {
@@ -54,11 +67,11 @@ public class SchedulingService {
             }
         }
 
-        // 3. 시간대 블록 설정 후보
+        // 3. 시간대 블록 설정 후보 계산
         List<TimeBlockConfig> blockConfigs;
 
         if (request.getSlotMinutes() != null && request.getSlotMinutes() > 0) {
-            // Generate sliding time slots between 09:00 and 22:00 with given slot duration
+            // slotMinutes 가 제공된 경우 09:00 ~ 22:00 사이를 슬라이딩 윈도우 방식으로 분할
             int slot = request.getSlotMinutes();
             List<TimeBlockConfig> generated = new ArrayList<>();
             LocalTime windowStart = LocalTime.of(9, 0);
@@ -73,7 +86,7 @@ public class SchedulingService {
             }
             blockConfigs = List.copyOf(generated);
         } else {
-            // 기본 고정 블록
+            // 기본 고정 시간대 블록
             blockConfigs = List.of(
                     new TimeBlockConfig(LocalTime.of(10, 0), LocalTime.of(12, 0), "오전 10:00 ~ 오후 12:00"),
                     new TimeBlockConfig(LocalTime.of(14, 0), LocalTime.of(16, 0), "오후 02:00 ~ 오후 04:00"),
@@ -84,7 +97,7 @@ public class SchedulingService {
 
         List<SchedulingResponse> candidates = new ArrayList<>();
 
-        // 4. 기간 내 날짜 루프
+        // 4. 기간 내 날짜 스캔 및 빈 시간 계산 루프
         LocalDate current = request.getStartDate();
         LocalDate end = request.getEndDate();
 
@@ -93,16 +106,13 @@ public class SchedulingService {
                 LocalDateTime slotStart = LocalDateTime.of(current, config.startTime);
                 LocalDateTime slotEnd = LocalDateTime.of(current, config.endTime);
 
-                // 이 시간대에 참여 가능한 사람 수 계산
                 int availableCount = 0;
 
-                // 사용자별 이벤트 목록으로 그룹화하여 충돌 검사 비용을 줄임
+                // 각 참여자별로 해당 시간대에 이벤트 충돌이 있는지 체크
                 for (User p : participants) {
                     boolean hasConflict = false;
-
                     List<Event> userEvents = eventsByUser.getOrDefault(p.getId(), Collections.emptyList());
 
-                    // 이 참여자의 스케줄 중 겹치는 일정이 있는지 검사
                     for (Event e : userEvents) {
                         if (e.getStartTime().isBefore(slotEnd) && e.getEndTime().isAfter(slotStart)) {
                             hasConflict = true;
@@ -131,26 +141,24 @@ public class SchedulingService {
             current = current.plusDays(1);
         }
 
-        // 5. 추천도(percent) 내림차순, 동일할 시 날짜/시간 오름차순 정렬
+        // 5. 추천도(percent) 내림차순 정렬, 동일할 시 날짜/시간 오름차순 정렬
         candidates.sort(new Comparator<SchedulingResponse>() {
             @Override
             public int compare(SchedulingResponse o1, SchedulingResponse o2) {
                 int p1 = o1.getPercent();
                 int p2 = o2.getPercent();
                 if (p1 != p2) {
-                    return Integer.compare(p2, p1); // 추천도 내림차순
+                    return Integer.compare(p2, p1);
                 }
-                // 날짜 오름차순
                 int dateCompare = o1.getDate().compareTo(o2.getDate());
                 if (dateCompare != 0) {
                     return dateCompare;
                 }
-                // 시간 오름차순
                 return o1.getStartTime().compareTo(o2.getStartTime());
             }
         });
 
-        // 6. 상위 최대 3개 후보 선택
+        // 6. 상위 최대 3개 매칭 결과 후보 반환
         return candidates.subList(0, Math.min(candidates.size(), 3));
     }
 

@@ -20,26 +20,51 @@ public class FriendshipController {
 
     private final FriendshipService friendshipService;
 
+    // 현재 친구 목록
     @GetMapping
     public List<FriendResponse> getFriends(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return friendshipService.getFriends(userDetails.getUser());
+        return friendshipService.getAcceptedFriends(userDetails.getUser());
     }
 
+    // 나한테 온 친구 요청 목록
+    @GetMapping("/requests/received")
+    public List<FriendResponse> getReceivedRequests(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return friendshipService.getReceivedRequests(userDetails.getUser());
+    }
+
+    // 내가 보낸 친구 요청 목록
+    @GetMapping("/requests/sent")
+    public List<FriendResponse> getSentRequests(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return friendshipService.getSentRequests(userDetails.getUser());
+    }
+
+    // 친구 요청 보내기
     @PostMapping
     public ResponseEntity<Void> addFriend(
             @Valid @RequestBody FriendAddRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        friendshipService.addFriend(userDetails.getUser(), request.getFriendEmail());
+        friendshipService.addFriendRequest(userDetails.getUser(), request.getFriendEmail());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{friendUserId}")
-    public ResponseEntity<Void> deleteFriend(
-            @PathVariable Long friendUserId,
+    // 친구 요청 수락
+    @PostMapping("/requests/{friendshipId}/accept")
+    public ResponseEntity<Void> acceptFriend(
+            @PathVariable Long friendshipId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        friendshipService.deleteFriend(userDetails.getUser(), friendUserId);
+        friendshipService.acceptFriendRequest(userDetails.getUser(), friendshipId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 친구 삭제 / 요청 거절 / 요청 취소 통합
+    @DeleteMapping("/{friendshipId}")
+    public ResponseEntity<Void> deleteFriend(
+            @PathVariable Long friendshipId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        friendshipService.deleteFriendship(userDetails.getUser(), friendshipId);
         return ResponseEntity.noContent().build();
     }
 }

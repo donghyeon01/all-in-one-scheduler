@@ -43,10 +43,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
+            HttpServletRequest servletRequest, HttpServletResponse response) {
         String userAgent = servletRequest.getHeader("User-Agent");
         String ipAddress = getClientIp(servletRequest);
-        
+
         TokenDto tokenDto = authService.login(request, userAgent, ipAddress);
         addRefreshTokenCookie(response, tokenDto.getRefreshToken());
         return ResponseEntity.ok(new LoginResponse(tokenDto.getAccessToken()));
@@ -136,4 +137,3 @@ public class AuthController {
         return ip;
     }
 }
-

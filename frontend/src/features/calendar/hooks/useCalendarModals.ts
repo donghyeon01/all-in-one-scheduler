@@ -42,7 +42,9 @@ export function useCalendarModals() {
   };
 
   const handleDateClick = (date: string) => {
-    setSelectedDate(date);
+    // date가 "2026-07-13" 형태로 들어오면 현재 시간 또는 기본값(예: 오전 09:00)을 붙여서 포맷팅합니다.
+    const defaultDateTime = `${date}T09:00`;
+    setSelectedDate(defaultDateTime);
     setIsAddOpen(true);
   };
 
@@ -51,7 +53,8 @@ export function useCalendarModals() {
       id: event.id,
       title: event.title,
       start: formatToDateTimeLocal(event.start),
-      end: formatToDateTimeLocal(event.end) || formatToDateTimeLocal(event.start),
+      end:
+        formatToDateTimeLocal(event.end) || formatToDateTimeLocal(event.start),
       location: event.extendedProps?.location || "",
     });
     setIsDetailOpen(true);
@@ -148,4 +151,3 @@ export function useCalendarModals() {
     },
   };
 }
-

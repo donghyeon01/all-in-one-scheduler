@@ -1,27 +1,58 @@
 import axiosInstance from "@/shared/api/axios";
 
 export interface Friend {
-  id: string; // 혹은 number. 백엔드에서 Long(number)으로 반환하므로 string으로 캐스팅하거나 맞춰줍니다.
+  id: string; // Friendship 엔티티의 ID
+  friendUserId: number; // 상대방 유저의 고유 ID
   name: string;
   email: string;
 }
 
 export const friendsApi = {
+  // 현재 정식 친구 목록 조회
   getFriends: async (): Promise<Friend[]> => {
     const response = await axiosInstance.get("/api/friends");
-    // 백엔드에서 반환된 id(Long)를 string으로 안전하게 변환하여 프론트엔드 일관성 유지
     return response.data.map((item: any) => ({
       id: String(item.id),
+      friendUserId: item.friendUserId,
       name: item.name,
       email: item.email,
     }));
   },
 
+  // 나한테 온 친구 요청 목록 조회
+  getReceivedRequests: async (): Promise<Friend[]> => {
+    const response = await axiosInstance.get("/api/friends/requests/received");
+    return response.data.map((item: any) => ({
+      id: String(item.id),
+      friendUserId: item.friendUserId,
+      name: item.name,
+      email: item.email,
+    }));
+  },
+
+  // 내가 보낸 친구 요청 목록 조회
+  getSentRequests: async (): Promise<Friend[]> => {
+    const response = await axiosInstance.get("/api/friends/requests/sent");
+    return response.data.map((item: any) => ({
+      id: String(item.id),
+      friendUserId: item.friendUserId,
+      name: item.name,
+      email: item.email,
+    }));
+  },
+
+  // 친구 요청 보내기
   addFriend: async (friendEmail: string): Promise<void> => {
     await axiosInstance.post("/api/friends", { friendEmail });
   },
 
-  deleteFriend: async (friendId: string | number): Promise<void> => {
-    await axiosInstance.delete(`/api/friends/${friendId}`);
+  // 친구 요청 수락하기
+  acceptFriendRequest: async (friendshipId: string): Promise<void> => {
+    await axiosInstance.post(`/api/friends/requests/${friendshipId}/accept`);
+  },
+
+  // 친구 끊기 / 요청 거절 / 요청 취소 통합
+  deleteFriend: async (friendshipId: string): Promise<void> => {
+    await axiosInstance.delete(`/api/friends/${friendshipId}`);
   },
 };

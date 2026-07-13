@@ -19,22 +19,22 @@ export default function MainHeader(): React.JSX.Element {
           <Link
             to="/todo"
             className="font-bold text-text-gray hover:text-text transition">
-            Todo
+            할일 관리
           </Link>
           <Link
             to="/calendar"
             className="font-bold text-text-gray hover:text-text transition">
-            Calendar
+            일정 관리
           </Link>
           <Link
             to="/friends"
             className="font-bold text-text-gray hover:text-text transition">
-            Friends
+            친구관리
           </Link>
           <Link
             to="/scheduling"
             className="font-bold text-text-gray hover:text-text transition">
-            Scheduling
+            일정 조율
           </Link>
         </>
       }
