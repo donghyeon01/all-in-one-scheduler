@@ -73,7 +73,7 @@ export default function EventModal({
         </div>
 
         {/* 편의성을 위해 시작 시간과 종료 시간을 그리드로 정렬 */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="text-sm font-bold text-text mb-1 block">
               시작 일시

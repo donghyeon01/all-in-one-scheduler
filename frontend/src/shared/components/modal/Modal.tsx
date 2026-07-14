@@ -35,7 +35,7 @@ export default function Modal({
       {/* 2. 실제 모달 콘텐츠 영역 (안쪽 클릭 시 닫히는 현상 방지를 위해 e.stopPropagation 적용) */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 rounded-3xl border-border bg-white p-8 shadow-md">
+        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 rounded-3xl border-border bg-white p-5 sm:p-8 shadow-md">
         {title && (
           <h2
             className="
@@ -48,7 +48,7 @@ export default function Modal({
         {/* 우측 상단 X 닫기 버튼 */}
         <button
           onClick={onClose}
-          className="absolute right-6 top-6 text-gray-400 hover:text-gray-600 z-10 font-bold">
+          className="absolute right-4 top-4 sm:right-6 sm:top-6 text-gray-400 hover:text-gray-600 z-10 font-bold">
           ✕
         </button>
 

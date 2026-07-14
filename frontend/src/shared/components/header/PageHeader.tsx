@@ -10,15 +10,19 @@ export default function PageHeader({ title, description, children }: Props) {
       className="
       mb-8
       flex
-      items-center
-      justify-between
+      flex-col
+      items-start
       gap-4
+      sm:flex-row
+      sm:items-center
+      sm:justify-between
     ">
       <div>
         <h1
           className="
-          text-4xl
+          text-3xl
           font-bold
+          sm:text-4xl
         ">
           {title}
         </h1>

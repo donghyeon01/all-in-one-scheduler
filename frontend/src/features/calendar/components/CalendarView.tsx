@@ -17,7 +17,7 @@ export default function CalendarView({
   onEventClick,
 }: Props) {
   return (
-    <div className="calendar-container bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div className="calendar-container bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -151,6 +151,34 @@ export default function CalendarView({
           font-size: 1.4rem !important;
           font-weight: 800;
           color: var(--color-text);
+        }
+
+        /* ======= 7. 모바일 반응형 ======= */
+        @media (max-width: 640px) {
+          .fc .fc-header-toolbar {
+            flex-direction: column;
+            gap: 8px;
+          }
+          .fc .fc-toolbar-chunk {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+          }
+          .fc .fc-toolbar-title {
+            font-size: 1.1rem !important;
+          }
+          .fc .fc-button-primary {
+            padding: 0.3rem 0.5rem !important;
+            font-size: 0.75rem !important;
+          }
+          .fc .fc-col-header-cell {
+            padding: 4px 0 !important;
+            font-size: 0.75rem !important;
+          }
+          .fc .fc-daygrid-day-number {
+            font-size: 0.75rem !important;
+          }
         }
       `,
         }}

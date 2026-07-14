@@ -21,8 +21,8 @@ export default function TodoItem({
       {/* 텍스트나 체크박스 영역 어디를 눌러도 인터랙션이 발생하도록 label 구조화 또는 클릭 이벤트 부여 */}
       <div
         onClick={() => onToggle(id)}
-        className="flex items-center justify-between cursor-pointer select-none">
-        <div className="flex gap-4 items-center">
+        className="flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none">
+        <div className="flex flex-1 min-w-0 gap-4 items-center">
           <input
             type="checkbox"
             checked={completed}
@@ -40,11 +40,13 @@ export default function TodoItem({
           </div>
         </div>
 
-        {completed ? (
-          <Badge variant="success">완료</Badge>
-        ) : (
-          <Badge variant="warning">진행중</Badge>
-        )}
+        <div className="shrink-0">
+          {completed ? (
+            <Badge variant="success">완료</Badge>
+          ) : (
+            <Badge variant="warning">진행중</Badge>
+          )}
+        </div>
       </div>
     </Card>
   );

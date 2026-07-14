@@ -7,7 +7,7 @@ export default function TodoFilter({ current, onChange }: Props) {
   const filters = ["전체", "진행 중", "완료"];
 
   return (
-    <div className="mb-6 flex gap-2">
+    <div className="mb-6 flex flex-wrap gap-2">
       {filters.map((filter) => (
         <button
           key={filter}
