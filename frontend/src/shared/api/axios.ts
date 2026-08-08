@@ -60,7 +60,7 @@ axiosInstance.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url &&
-      !originalRequest.url.includes("/api/auth/refresh")
+      !originalRequest.url.includes("/auth/refresh")
     ) {
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
@@ -78,7 +78,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post<{ accessToken: string }>(
-          `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
+          `${import.meta.env.VITE_API_URL}/auth/refresh`,
           {},
           { withCredentials: true },
         );

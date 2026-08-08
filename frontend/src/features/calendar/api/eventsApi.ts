@@ -45,7 +45,7 @@ interface EventApiResponse {
 
 export const eventsApi = {
   getEvents: async (): Promise<CalendarEvent[]> => {
-    const response = await axiosInstance.get<EventApiResponse[]>("/api/events");
+    const response = await axiosInstance.get<EventApiResponse[]>("/events");
     return response.data.map((item) => ({
       id: String(item.id),
       title: item.title,
@@ -58,17 +58,17 @@ export const eventsApi = {
   },
 
   createEvent: async (data: EventCreateRequest): Promise<void> => {
-    await axiosInstance.post("/api/events", data);
+    await axiosInstance.post("/events", data);
   },
 
   updateEvent: async (
     eventId: string | number,
     data: EventUpdateRequest,
   ): Promise<void> => {
-    await axiosInstance.put(`/api/events/${eventId}`, data);
+    await axiosInstance.put(`/events/${eventId}`, data);
   },
 
   deleteEvent: async (eventId: string | number): Promise<void> => {
-    await axiosInstance.delete(`/api/events/${eventId}`);
+    await axiosInstance.delete(`/events/${eventId}`);
   },
 };

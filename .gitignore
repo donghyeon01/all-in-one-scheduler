@@ -60,6 +60,9 @@ frontend/.vite/
 frontend/.env
 frontend/.env.local
 frontend/.env.production
+.env
+.env.local
+.env.production
 
 # =========================
 

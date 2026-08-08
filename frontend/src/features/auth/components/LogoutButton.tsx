@@ -8,9 +8,9 @@ export default function LogoutButton() {
 
   const handleLogout = async () => {
     try {
-      // 1. 백엔드 /api/auth/logout 호출 → httpOnly 쿠키(refreshToken) 서버에서 삭제
+      // 1. 백엔드 /auth/logout 호출 → httpOnly 쿠키(refreshToken) 서버에서 삭제
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+        `${import.meta.env.VITE_API_URL}/auth/logout`,
         {},
         { withCredentials: true }
       );

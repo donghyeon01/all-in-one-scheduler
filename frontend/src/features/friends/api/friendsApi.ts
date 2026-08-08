@@ -10,7 +10,7 @@ export interface Friend {
 export const friendsApi = {
   // 현재 정식 친구 목록 조회
   getFriends: async (): Promise<Friend[]> => {
-    const response = await axiosInstance.get<Friend[]>("/api/friends");
+    const response = await axiosInstance.get<Friend[]>("/friends");
     return response.data.map((item) => ({
       id: String(item.id),
       friendUserId: item.friendUserId,
@@ -22,7 +22,7 @@ export const friendsApi = {
   // 나한테 온 친구 요청 목록 조회
   getReceivedRequests: async (): Promise<Friend[]> => {
     const response = await axiosInstance.get<Friend[]>(
-      "/api/friends/requests/received",
+      "/friends/requests/received",
     );
     return response.data.map((item) => ({
       id: String(item.id),
@@ -35,7 +35,7 @@ export const friendsApi = {
   // 내가 보낸 친구 요청 목록 조회
   getSentRequests: async (): Promise<Friend[]> => {
     const response = await axiosInstance.get<Friend[]>(
-      "/api/friends/requests/sent",
+      "/friends/requests/sent",
     );
     return response.data.map((item) => ({
       id: String(item.id),
@@ -47,16 +47,16 @@ export const friendsApi = {
 
   // 친구 요청 보내기
   addFriend: async (friendEmail: string): Promise<void> => {
-    await axiosInstance.post("/api/friends", { friendEmail });
+    await axiosInstance.post("/friends", { friendEmail });
   },
 
   // 친구 요청 수락하기
   acceptFriendRequest: async (friendshipId: string): Promise<void> => {
-    await axiosInstance.post(`/api/friends/requests/${friendshipId}/accept`);
+    await axiosInstance.post(`/friends/requests/${friendshipId}/accept`);
   },
 
   // 친구 끊기 / 요청 거절 / 요청 취소 통합
   deleteFriend: async (friendshipId: string): Promise<void> => {
-    await axiosInstance.delete(`/api/friends/${friendshipId}`);
+    await axiosInstance.delete(`/friends/${friendshipId}`);
   },
 };

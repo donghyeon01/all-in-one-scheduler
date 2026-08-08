@@ -23,19 +23,19 @@ export interface User {
 
 export const authApi = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await axiosInstance.post("/api/auth/login", data);
+    const response = await axiosInstance.post("/auth/login", data);
 
     return response.data;
   },
 
   signup: async (data: SignupRequest) => {
-    const response = await axiosInstance.post("/api/auth/signup", data);
+    const response = await axiosInstance.post("/auth/signup", data);
 
     return response.data;
   },
 
   getMe: async (): Promise<User> => {
-    const response = await axiosInstance.get("/api/users/me");
+    const response = await axiosInstance.get("/users/me");
     return response.data;
   },
 };

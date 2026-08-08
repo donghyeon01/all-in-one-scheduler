@@ -20,20 +20,20 @@ export interface TaskUpdateRequest {
 
 export const taskApi = {
   getTasks: async (): Promise<Task[]> => {
-    const response = await axiosInstance.get("/api/tasks");
+    const response = await axiosInstance.get("/tasks");
     return response.data;
   },
 
   createTask: async (data: TaskCreateRequest): Promise<void> => {
-    await axiosInstance.post("/api/tasks", data);
+    await axiosInstance.post("/tasks", data);
   },
 
   updateTask: async (taskId: number, data: TaskUpdateRequest): Promise<void> => {
-    await axiosInstance.put(`/api/tasks/${taskId}`, data);
+    await axiosInstance.put(`/tasks/${taskId}`, data);
   },
 
   deleteTask: async (taskId: number): Promise<void> => {
-    await axiosInstance.delete(`/api/tasks/${taskId}`);
+    await axiosInstance.delete(`/tasks/${taskId}`);
   },
 };
 
