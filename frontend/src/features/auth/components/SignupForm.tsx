@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { authApi } from "@/features/auth/api/authApi";
+import Input from "@/shared/components/ui/Input";
+import Button from "@/shared/components/button/Button";
 
 interface SignupFormProps {
   onClose?: () => void; // 회원가입 완료 시 모달을 닫기 위한 함수
@@ -41,82 +43,62 @@ export default function SignupForm({
     <main>
       <div>
         <div className="text-center">
-          <h1 className="text-3xl font-bold">SOSO</h1>
-          <p className="mt-2 text-muted-foreground">
+          <h1 className="text-3xl font-black text-accent">SOSO</h1>
+          <p className="mt-2 text-text-muted">
             회원가입 후 서비스를 이용해보세요.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-          {/* 이름 입력란 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium">이름</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="이름"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="홍길동"
+            required
+          />
 
-          {/* 이메일 입력란 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium">이메일</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="이메일"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example@email.com"
+            required
+          />
 
-          {/* 비밀번호 입력란 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium">비밀번호</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="비밀번호"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
 
-          {/* 비밀번호 확인 입력란 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              비밀번호 확인
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="비밀번호 확인"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
 
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-primary py-3 font-semibold transition hover:opacity-90">
+          <Button variant="primary" size="lg" type="submit" className="w-full">
             회원가입
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center">
-          <span className="text-muted-foreground">이미 계정이 있으신가요?</span>
+          <span className="text-text-muted">이미 계정이 있으신가요?</span>
           <button
             onClick={(e) => {
               e.preventDefault();
               onSwitchToLogin?.();
             }}
-            className="ml-2 font-semibold hover:underline">
+            className="ml-2 text-accent font-semibold hover:underline">
             로그인
           </button>
         </div>

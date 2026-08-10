@@ -41,7 +41,7 @@ export default function CalendarSidebar({ events }: CalendarSidebarProps) {
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       <Card>
         <h3 className="font-black text-text">📅 이번 주 일정</h3>
-        <p className="mt-2 text-sm font-bold text-slate-500">
+        <p className="mt-2 text-sm font-bold text-text-secondary">
           {thisWeekEvents.length > 0
             ? `예정된 일정 ${thisWeekEvents.length}개`
             : "이번 주에는 잡힌 일정이 없습니다."}
@@ -52,15 +52,15 @@ export default function CalendarSidebar({ events }: CalendarSidebarProps) {
         <h3 className="font-black text-text">🚨 다가오는 마감</h3>
         {upcomingDeadlineEvent ? (
           <>
-            <p className="mt-2 font-extrabold text-text-gray truncate">
+            <p className="mt-2 font-extrabold text-text-secondary truncate">
               {upcomingDeadlineEvent.title}
             </p>
-            <p className="text-sm font-black text-red-500 mt-1">
+            <p className="text-sm font-black text-danger-text mt-1">
               {getDDayString(upcomingDeadlineEvent.start)}
             </p>
           </>
         ) : (
-          <p className="mt-2 text-sm font-bold text-slate-400">
+          <p className="mt-2 text-sm font-bold text-text-muted">
             다가오는 마감이 없습니다.
           </p>
         )}

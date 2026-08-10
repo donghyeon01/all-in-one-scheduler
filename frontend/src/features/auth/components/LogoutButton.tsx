@@ -12,7 +12,7 @@ export default function LogoutButton() {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
     } catch (error) {
       console.warn("로그아웃 API 호출 실패 (무시됨):", error);
@@ -29,19 +29,19 @@ export default function LogoutButton() {
       onClick={handleLogout}
       className="
         rounded-xl
-        bg-white
+        bg-surface
         px-4
         py-2
         text-sm
         font-semibold
+        text-text
         shadow-sm
         hover:shadow-md
         transition
-        hover:bg-accent
+        hover:bg-accent-pink
         cursor-pointer
       ">
       로그아웃
     </button>
   );
 }
-

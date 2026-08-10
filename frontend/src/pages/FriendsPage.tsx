@@ -6,6 +6,7 @@ import PageHeader from "@/shared/components/header/PageHeader";
 import FriendList from "@/features/friends/components/FriendList";
 import AddFriendModal from "@/features/friends/components/AddFriendModal";
 import Modal from "@/shared/components/modal/Modal";
+import Toast from "@/shared/components/toast/Toast";
 import { friendsApi } from "@/features/friends/api/friendsApi";
 
 // react-query 캐시 키 (친구/받은요청/보낸요청을 하나의 키 묶음으로 관리)
@@ -24,9 +25,6 @@ export default function FriendsPage() {
   // 토스트 메시지 알림 유틸 함수
   const showToast = (message: string) => {
     setToastMessage(message);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 1000); // 1초 뒤 자동 소멸
   };
 
   // 친구 목록 / 받은 요청 / 보낸 요청을 하나의 쿼리로 통합 조회 (기존 useEffect + Promise.all 패턴을 대체)
@@ -115,21 +113,28 @@ export default function FriendsPage() {
 
   return (
     <>
-      {/* 화면 상단 고정 토스트 알림창 */}
+      {/* 화면 고정 토스트 알림창 (공통 Toast 컴포넌트) */}
       {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-red-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg border-2 border-white animate-fade-in-out">
-          {toastMessage}
-        </div>
+        <Toast
+          message={toastMessage}
+          variant="info"
+          onClose={() => setToastMessage(null)}
+        />
       )}
 
       <PageHeader
         title="친구 관리"
         description="친구를 추가하고 약속을 함께 조율해 보세요.">
-        <Button onClick={() => setIsAddModalOpen(true)}>+ 친구 추가</Button>
+        <Button
+          variant="primary"
+          size="md"
+          onClick={() => setIsAddModalOpen(true)}>
+          + 친구 추가
+        </Button>
       </PageHeader>
 
       {isLoading && (
-        <p className="mt-6 text-sm font-bold text-slate-400">
+        <p className="mt-6 text-sm font-bold text-text-muted">
           친구 목록을 불러오는 중입니다...
         </p>
       )}
@@ -138,7 +143,7 @@ export default function FriendsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
         {/* 왼쪽 섹션: 현재 친구 목록 */}
         <div className="space-y-4">
-          <h2 className="text-xl font-black text-text border-b-2 border-text pb-2">
+          <h2 className="text-xl font-black text-text border-b-2 border-border-strong pb-2">
             현재 친구 목록 ({friends.length})
           </h2>
           <FriendList
@@ -152,7 +157,7 @@ export default function FriendsPage() {
         <div className="space-y-8">
           {/* 나한테 온 친구 요청 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-black text-text border-b-2 border-text pb-2">
+            <h2 className="text-xl font-black text-text border-b-2 border-border-strong pb-2">
               나한테 온 친구 요청 목록 ({receivedRequests.length})
             </h2>
             <FriendList
@@ -165,7 +170,7 @@ export default function FriendsPage() {
 
           {/* 내가 보낸 친구 요청 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-black text-text border-b-2 border-text pb-2">
+            <h2 className="text-xl font-black text-text border-b-2 border-border-strong pb-2">
               내가 보낸 친구 요청 목록 ({sentRequests.length})
             </h2>
             <FriendList
@@ -192,22 +197,21 @@ export default function FriendsPage() {
         <div className="p-4 space-y-4">
           <p className="text-text font-medium text-center">
             정말로 이 작업을 진행하시겠습니까? <br />
-            <span className="text-accent text-sm font-bold">
+            <span className="text-accent-pink text-sm font-bold">
               (친구 끊기, 요청 거절 및 취소는 즉시 반영됩니다)
             </span>
           </p>
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
+              variant="ghost"
+              size="md"
               type="button"
-              onClick={() => setDeleteTargetId(null)}
-              className="rounded-xl border-2 border-text bg-white px-4 py-2 font-bold text-text shadow-[2px_2px_0px_0px_#1e2538]">
+              onClick={() => setDeleteTargetId(null)}>
               취소
-            </button>
-            <button
-              onClick={handleConfirmDelete}
-              className="rounded-xl border-2 border-text bg-accent px-4 py-2 font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] hover:bg-opacity-90">
+            </Button>
+            <Button variant="danger" size="md" onClick={handleConfirmDelete}>
               확인
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

@@ -9,7 +9,11 @@ interface AddFriendModalProps {
   onAddFriend: (email: string) => void;
 }
 
-export default function AddFriendModal({ isOpen, onClose, onAddFriend }: AddFriendModalProps) {
+export default function AddFriendModal({
+  isOpen,
+  onClose,
+  onAddFriend,
+}: AddFriendModalProps) {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,13 +40,12 @@ export default function AddFriendModal({ isOpen, onClose, onAddFriend }: AddFrie
           />
         </div>
         <div className="flex justify-end gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border-2 border-text bg-white px-4 py-2 font-bold text-text shadow-[2px_2px_0px_0px_#1e2538]">
+          <Button variant="ghost" size="md" type="button" onClick={onClose}>
             취소
-          </button>
-          <Button type="submit">초대장 보내기</Button>
+          </Button>
+          <Button variant="primary" size="md" type="submit">
+            초대장 보내기
+          </Button>
         </div>
       </form>
     </Modal>

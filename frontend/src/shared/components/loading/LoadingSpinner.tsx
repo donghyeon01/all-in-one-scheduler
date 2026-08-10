@@ -21,7 +21,7 @@ export default function LoadingSpinner({ size = "md" }: Props) {
           animate-spin
           rounded-full
           border-4
-          border-slate-200
+          border-border
           border-t-primary
           ${sizes[size]}
         `}

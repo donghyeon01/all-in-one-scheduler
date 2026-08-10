@@ -1,19 +1,49 @@
 import React from "react";
 
-// 공통 카드 프롭스 확장
+// 신규 variant: clean | brutal | brutal-accent
+// 구 variant 호환: default → clean, neo/landing → brutal
+type CardVariant =
+  | "clean"
+  | "brutal"
+  | "brutal-accent"
+  | "default"
+  | "neo"
+  | "landing";
+
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "neo" | "landing"; // 'landing' variant 추가
+  variant?: CardVariant;
   children?: React.ReactNode;
 
-  // 기존 LandingCard에서 쓰던 속성들을 선택적(Optional)으로 추가
+  // brutal variant에서 사용하는 콘텐츠 속성
   title?: string;
   description?: string;
   icon?: React.ComponentType<{ className?: string }> | string;
   index?: number;
 }
 
+// 구 variant명을 신규명으로 정규화
+function normalizeVariant(
+  variant: CardVariant,
+): "clean" | "brutal" | "brutal-accent" {
+  if (variant === "default") return "clean";
+  if (variant === "neo" || variant === "landing") return "brutal";
+  return variant;
+}
+
+const variantClasses = {
+  // 대시보드 클린 카드
+  clean:
+    "rounded-2xl border border-border bg-surface p-5 shadow-card text-text-secondary",
+  // 랜딩 네오-브루탈 카드
+  brutal:
+    "rounded-3xl border-3 border-border-strong bg-surface-muted p-6 shadow-brutal-lg transition-all duration-300 hover:-translate-y-1",
+  // 포인트 액센트 카드
+  "brutal-accent":
+    "rounded-3xl border-3 border-border-strong bg-surface p-6 shadow-brutal-accent transition-all duration-300 hover:-translate-y-1",
+};
+
 export default function Card({
-  variant = "default",
+  variant = "clean",
   children,
   className = "",
   title,
@@ -22,22 +52,24 @@ export default function Card({
   index,
   ...props
 }: CardProps) {
-  // 1. 기존 LandingCard 디자인 (landing 또는 neo)
-  if (variant === "landing" || variant === "neo") {
+  const normalized = normalizeVariant(variant);
+
+  // brutal variant는 index 배지, 아이콘, 타이틀/설명을 지원
+  if (normalized === "brutal") {
     return (
       <div
-        className={`relative group rounded-3xl border-3 bg-muted p-6 shadow-[3px_3px_0px_0px_#1e2538] transition-all duration-300 hover:-translate-y-1 ${className}`}
+        className={`relative group ${variantClasses.brutal} ${className}`}
         {...props}>
         {/* 왼쪽 위 스티커 스타일의 숫자 배지 */}
         {index !== undefined && (
-          <div className="absolute -top-4 left-6 flex h-9 w-9 items-center justify-center rounded-full bg-accent-purple font-black text-white border-2 border-text shadow-[2px_2px_0px_0px_#1e2538]">
+          <div className="absolute -top-4 left-6 flex h-9 w-9 items-center justify-center rounded-full bg-accent font-black text-white border-2 border-border-strong shadow-brutal-sm">
             {index + 1}
           </div>
         )}
 
         {/* 아이콘 표시 영역 */}
         {IconOrPath && (
-          <div className="mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-milk-white border-2 shadow-[3px_3px_0px_0px_#c8dbfe]">
+          <div className="mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-milk-white border-2 shadow-[3px_3px_0px_0px_var(--color-primary)]">
             {typeof IconOrPath === "string" ? (
               <img
                 src={IconOrPath}
@@ -51,26 +83,33 @@ export default function Card({
         )}
 
         {/* 타이틀과 설명글 */}
-        {title && (
-          <h3 className="mt-6 text-xl font-semibold text-text">{title}</h3>
-        )}
+        {title && <h3 className="mt-6 text-xl font-bold text-text">{title}</h3>}
         {description && (
-          <p className="mt-2 text-sm font-bold text-card-foreground/80 leading-relaxed">
+          <p className="mt-2 text-sm font-medium text-text-secondary leading-relaxed">
             {description}
           </p>
         )}
 
-        {/* 만약 자식이 따로 들어온다면 같이 렌더링 */}
+        {/* 자식 요소 */}
         {children}
       </div>
     );
   }
 
-  // 2. 대시보드/일반 페이지에서 쓰던 기본 Card 디자인
+  // brutal-accent variant
+  if (normalized === "brutal-accent") {
+    return (
+      <div
+        className={`relative group ${variantClasses["brutal-accent"]} ${className}`}
+        {...props}>
+        {children}
+      </div>
+    );
+  }
+
+  // clean variant (기본)
   return (
-    <div
-      className={`rounded-2xl border bg-card p-5 shadow-sm text-card-foreground ${className}`}
-      {...props}>
+    <div className={`${variantClasses.clean} ${className}`} {...props}>
       {children}
     </div>
   );

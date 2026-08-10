@@ -17,7 +17,7 @@ export default function CalendarView({
   onEventClick,
 }: Props) {
   return (
-    <div className="calendar-container bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+    <div className="calendar-container bg-surface p-4 sm:p-5 rounded-2xl border border-border shadow-card overflow-x-auto">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -46,15 +46,15 @@ export default function CalendarView({
         /* < > 버튼 사이, 그리고 Month Week 버튼 사이를 강제로 갈라놓기 */
         .fc .fc-button-group {
           display: inline-flex !important;
-          gap: 6px !important; /* 이미지의 빨간 선 자리에 6px 여백 생성 */
+          gap: 6px !important;
           background-color: transparent !important;
           border: none !important;
         }
 
         /* FullCalendar가 그룹 버튼들의 경계면 라운딩을 깎아버리는 기본 속성 해제 */
         .fc .fc-button-group > .fc-button {
-          border-radius: 0.5rem !important; /* 모든 모서리를 다시 둥글게 */
-          margin-left: 0 !important; /* 좌측 마진 겹침 현상 제거 */
+          border-radius: 0.5rem !important;
+          margin-left: 0 !important;
         }
 
         /* 좌측 툴바 덩어리들(< > 그룹과 Today 버튼) 사이의 간격 */
@@ -66,62 +66,62 @@ export default function CalendarView({
 
         /* ======= 2. 버튼 디자인 및 1초 뒤 포커스 해제 효과 ======= */
         .fc .fc-button-primary {
-          background-color: #ffffff !important;
-          border: 2px solid var(--color-accent-purple) !important;
-          color: var(--color-accent-purple) !important;
+          background-color: var(--color-surface) !important;
+          border: 2px solid var(--color-accent) !important;
+          color: var(--color-accent) !important;
           font-weight: 700 !important;
           padding: 0.4rem 0.8rem !important;
           box-shadow: none !important;
-          
+
           /* 포커스가 빠질 때 보라색 라인과 잔상이 1초 동안 부드럽게 사라짐 */
           transition: background-color 1s ease, box-shadow 1s ease, border-color 1s ease !important;
         }
-        
+
         .fc .fc-button-primary:hover {
-          background-color: rgba(118, 75, 162, 0.08) !important;
-          transition: none !important; /* 마우스 올릴 땐 즉시 반응 */
+          background-color: rgba(123, 97, 255, 0.08) !important;
+          transition: none !important;
         }
 
         /* 클릭하는 순간(Active)과 강제 포커스 상태 오버라이드 */
         .fc .fc-button-primary:focus,
         .fc .fc-button-primary:not(:disabled):active {
-          background-color: rgba(118, 75, 162, 0.15) !important;
-          border-color: var(--color-accent-purple) !important;
-          box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.25) !important;
+          background-color: rgba(123, 97, 255, 0.15) !important;
+          border-color: var(--color-accent) !important;
+          box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.25) !important;
           outline: none !important;
-          transition: none !important; 
+          transition: none !important;
         }
 
         /* 활성화된 스위치 버튼 스타일 유지 */
         .fc .fc-button-primary:not(:disabled).fc-button-active {
-          background-color: var(--color-accent-purple) !important;
-          border-color: var(--color-accent-purple) !important;
+          background-color: var(--color-accent) !important;
+          border-color: var(--color-accent) !important;
           color: #ffffff !important;
-          box-shadow: 0 2px 6px rgba(118, 75, 162, 0.3) !important;
+          box-shadow: 0 2px 6px rgba(123, 97, 255, 0.3) !important;
           transition: none !important;
         }
 
         /* ======= 3. 기본 달력 격자선 및 테이블 틀 ======= */
         .fc {
-          --fc-border-color: #cbd5e1 !important; 
+          --fc-border-color: var(--color-border) !important;
         }
         .fc-theme-standard .fc-scrollgrid {
-          border: 2px solid #cbd5e1 !important;
+          border: 2px solid var(--color-border) !important;
           border-radius: 0.75rem !important;
           overflow: hidden;
         }
         .fc .fc-col-header-cell {
-          background-color: #e2e8f0 !important; 
+          background-color: var(--color-surface-muted) !important;
           padding: 6px 0 !important;
         }
 
-        /* ======= 4. 탠저린 오렌지 이벤트 바 ======= */
+        /* ======= 4. 액센트 퍼플 이벤트 바 ======= */
         .fc .fc-event,
         .fc .fc-h-event,
         .fc .fc-v-event {
-          background-color: #ff8c00 !important; 
-          border: 1px solid #e07b00 !important; 
-          color: #ffffff !important; 
+          background-color: var(--color-accent) !important;
+          border: 1px solid var(--color-accent) !important;
+          color: #ffffff !important;
           padding: 4px 6px !important;
           font-weight: 700 !important;
           font-size: 0.825rem !important;
@@ -137,12 +137,12 @@ export default function CalendarView({
 
         /* ======= 5. 오늘 날짜 하이라이트 인셋 링 ======= */
         .fc .fc-day-today {
-          background-color: #ffffff !important; 
+          background-color: var(--color-surface) !important;
           position: relative;
-          box-shadow: inset 0 0 0 3px var(--color-accent-purple) !important; 
+          box-shadow: inset 0 0 0 3px var(--color-accent) !important;
         }
         .fc .fc-day-today .fc-daygrid-day-number {
-          color: var(--color-accent-purple) !important;
+          color: var(--color-accent) !important;
           font-weight: 800 !important;
         }
 

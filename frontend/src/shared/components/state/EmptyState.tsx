@@ -12,28 +12,16 @@ export default function EmptyState({ title, description }: Props) {
       items-center
       justify-center
       rounded-2xl
-      border
+      border-2
       border-dashed
+      border-border
       p-10
       text-center
     ">
-      <p
-        className="
-        text-lg
-        font-semibold
-      ">
-        {title}
-      </p>
+      <p className="text-lg font-semibold text-text">{title}</p>
 
       {description && (
-        <p
-          className="
-          mt-2
-          text-sm
-          text-slate-500
-        ">
-          {description}
-        </p>
+        <p className="mt-2 text-sm text-text-secondary">{description}</p>
       )}
     </div>
   );

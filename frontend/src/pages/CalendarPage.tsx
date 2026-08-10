@@ -30,7 +30,7 @@ export default function CalendarPage() {
           description="내 일정과 모임 스케줄을 한눈에 확인하세요."
         />
 
-        <div className="p-6 text-center text-slate-500">
+        <div className="p-6 text-center text-text-secondary">
           일정을 불러오는 중입니다...
         </div>
       </>
@@ -45,7 +45,7 @@ export default function CalendarPage() {
           description="내 일정과 모임 스케줄을 한눈에 확인하세요."
         />
 
-        <div className="p-6 text-center text-red-500">
+        <div className="p-6 text-center text-danger-text">
           일정을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
         </div>
       </>

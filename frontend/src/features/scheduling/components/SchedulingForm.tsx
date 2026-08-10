@@ -59,7 +59,7 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
   };
 
   return (
-    <Card className="h-fit border-3">
+    <Card variant="brutal" className="h-fit">
       <h3 className="text-xl font-black text-text mb-4">조율 조건 설정</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -103,7 +103,7 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
           <label className="mb-2 block text-sm font-bold text-text">
             참여할 친구 선택 ({selectedFriendIds.length}명 선택됨)
           </label>
-          <div className="max-h-40 overflow-y-auto border border-slate-200 rounded-xl p-3 space-y-2 bg-slate-50">
+          <div className="max-h-40 overflow-y-auto border border-border rounded-xl p-3 space-y-2 bg-surface-muted">
             {friends.length > 0 ? (
               friends.map((friend) => (
                 <label
@@ -111,7 +111,7 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
                   className="flex items-center gap-3 cursor-pointer text-sm font-medium text-text select-none">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded text-accent-purple focus:ring-accent-purple border-slate-300"
+                    className="w-4 h-4 rounded text-accent focus:ring-accent border-border"
                     checked={selectedFriendIds.includes(friend.id)}
                     onChange={(e) =>
                       handleFriendCheck(friend.id, e.target.checked)
@@ -121,7 +121,7 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
                 </label>
               ))
             ) : (
-              <p className="text-xs text-slate-400 text-center py-4">
+              <p className="text-xs text-text-muted text-center py-4">
                 등록된 친구가 없습니다.
               </p>
             )}
@@ -129,7 +129,11 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
         </div>
 
         <div className="pt-2">
-          <Button type="submit" className="w-full justify-center text-base">
+          <Button
+            variant="brutal"
+            size="md"
+            type="submit"
+            className="w-full justify-center">
             🚀 추천 시간대 분석하기
           </Button>
         </div>

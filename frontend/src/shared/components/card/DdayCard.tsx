@@ -1,3 +1,5 @@
+import Card from "./Card";
+
 interface Props {
   // 마감이 다가오는 항목의 제목 (예: 할 일 제목, 일정 제목)
   title: string;
@@ -23,18 +25,11 @@ function getDDayLabel(dueDate: string): string {
 
 export default function DdayCard({ title, dueDate }: Props) {
   return (
-    <div
-      className="
-      rounded-2xl
-      bg-primary
-      p-4
-      sm:p-6
-    ">
-      <p className="text-sm truncate">{title}</p>
-
-      <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
+    <Card variant="clean" className="bg-primary p-4 sm:p-6">
+      <p className="text-sm truncate text-text">{title}</p>
+      <h2 className="mt-2 text-3xl font-bold text-text sm:text-4xl">
         {getDDayLabel(dueDate)}
       </h2>
-    </div>
+    </Card>
   );
 }

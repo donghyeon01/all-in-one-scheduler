@@ -31,12 +31,13 @@ export default function Avatar({ name, imageUrl, size = "md" }: Props) {
     <div
       className={`
         flex
-            items-center
-            justify-center
-            rounded-full
-            bg-primary
-            font-bold
-            shadow-[1px_1px_0px_0px_rgba(0,0,0,0.3)]
+        items-center
+        justify-center
+        rounded-full
+        bg-primary
+        font-bold
+        text-text
+        shadow-brutal-sm
         ${sizeClass[size]}
       `}>
       {initial}

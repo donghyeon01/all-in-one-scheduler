@@ -1,4 +1,7 @@
 import Card from "@/shared/components/card/Card";
+import Avatar from "@/shared/components/ui/Avatar";
+import Button from "@/shared/components/button/Button";
+import EmptyState from "@/shared/components/state/EmptyState";
 import { type Friend } from "@/features/friends/api/friendsApi";
 
 interface FriendListProps {
@@ -15,11 +18,7 @@ export default function FriendList({
   onAcceptFriend,
 }: FriendListProps) {
   if (friends.length === 0) {
-    return (
-      <div className="text-center py-8 text-text-gray border-2 border-dashed border-text rounded-xl bg-white">
-        목록이 비어 있습니다.
-      </div>
-    );
+    return <EmptyState title="목록이 비어 있습니다." />;
   }
 
   return (
@@ -28,14 +27,12 @@ export default function FriendList({
         <Card key={friend.id} className="flex flex-col justify-between p-4">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-text bg-secondary font-black text-text shadow-[1px_1px_0px_0px_#1e2538]">
-                {friend.name ? friend.name[0] : "?"}
-              </div>
+              <Avatar name={friend.name || "?"} size="md" />
               <div className="truncate">
                 <h3 className="font-bold text-text text-base truncate">
                   {friend.name || "사용자"}
                 </h3>
-                <p className="text-xs text-text-gray truncate">
+                <p className="text-xs text-text-secondary truncate">
                   {friend.email}
                 </p>
               </div>
@@ -45,38 +42,44 @@ export default function FriendList({
           <div className="mt-4 flex gap-2">
             {type === "current" && (
               <>
-                <button className="flex-1 rounded-xl border-2 border-text bg-white py-1.5 text-xs font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-primary-bg">
+                <Button variant="ghost" size="sm" className="flex-1">
                   프로필 보기
-                </button>
-                <button
-                  onClick={() => onDeleteFriend?.(friend.id)}
-                  className="rounded-xl border-2 border-text bg-accent px-3 py-1.5 text-xs font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-accent/70">
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => onDeleteFriend?.(friend.id)}>
                   삭제
-                </button>
+                </Button>
               </>
             )}
 
             {type === "received" && (
               <>
-                <button
-                  onClick={() => onAcceptFriend?.(friend.id)}
-                  className="flex-1 rounded-xl border-2 border-text bg-secondary py-1.5 text-xs font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:opacity-90">
+                <Button
+                  variant="brutal"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => onAcceptFriend?.(friend.id)}>
                   수락
-                </button>
-                <button
-                  onClick={() => onDeleteFriend?.(friend.id)}
-                  className="rounded-xl border-2 border-text bg-white px-3 py-1.5 text-xs font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-primary-bg">
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDeleteFriend?.(friend.id)}>
                   거절
-                </button>
+                </Button>
               </>
             )}
 
             {type === "sent" && (
-              <button
-                onClick={() => onDeleteFriend?.(friend.id)}
-                className="flex-1 rounded-xl border-2 border-text bg-white py-1.5 text-xs font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-primary-bg">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+                onClick={() => onDeleteFriend?.(friend.id)}>
                 요청 취소
-              </button>
+              </Button>
             )}
           </div>
         </Card>

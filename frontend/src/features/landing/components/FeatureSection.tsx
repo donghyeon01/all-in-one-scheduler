@@ -1,4 +1,5 @@
 import Card from "@/shared/components/card/Card";
+import SectionHeader from "@/shared/components/header/SectionHeader";
 import { CalendarDays, Users, Bell, CheckSquare } from "lucide-react";
 
 const features = [
@@ -26,26 +27,18 @@ const features = [
 
 export default function FeatureSection() {
   return (
-    <section className="bg-primary-bg py-20 border-b-2 border-border overflow-hidden">
+    <section className="bg-surface-muted py-20 border-b-2 border-border overflow-hidden">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-center">
-          <span className="rounded-full bg-primary/30 px-4 py-2 text-2xl border-2 font-semibold text-slate-700">
-            Features
-          </span>
-
-          <h2 className="mt-6 text-3xl sm:text-4xl font-black text-text">
-            일정 관리부터 조율까지 한 방에!
-          </h2>
-
-          <p className="mt-4 font-medium text-text-gray max-w-xl mx-auto">
-            SOSO가 제공하는 퐁신하고 스마트한 기능들로 모임 준비가 즐거워집니다.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Features"
+          title="일정 관리부터 조율까지 한 방에!"
+          description="SOSO가 제공하는 퐁신하고 스마트한 기능들로 모임 준비가 즐거워집니다."
+        />
         <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature) => (
             <Card
               key={feature.title}
-              variant="landing" // variant 추가!
+              variant="brutal"
               title={feature.title}
               description={feature.description}
               icon={feature.icon}

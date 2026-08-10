@@ -1,18 +1,14 @@
 interface Props {
   children: React.ReactNode;
-
   variant?: "default" | "success" | "warning" | "danger";
 }
 
 export default function Badge({ children, variant = "default" }: Props) {
   const variants = {
-    default: "bg-slate-100 text-slate-700",
-
-    success: "bg-success-dark text-success-foreground",
-
-    warning: "bg-warn text-warn-foreground",
-
-    danger: "bg-danger text-danger-foreground",
+    default: "bg-surface-muted text-text-secondary",
+    success: "bg-success text-success-text",
+    warning: "bg-warning text-warning-text",
+    danger: "bg-danger text-danger-text",
   };
 
   return (

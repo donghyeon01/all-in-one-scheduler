@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import BaseHeader from "./BaseHeader";
+import Button from "../button/Button";
 
 const navItems = [
   { id: "hero", label: "홈" },
@@ -93,7 +94,7 @@ export default function LandingHeader({
     <BaseHeader
       // 1. 왼쪽 슬롯에 로고 전달
       leftSlot={
-        <Link to="/" className="text-2xl font-black text-accent-purple">
+        <Link to="/" className="text-2xl font-black text-accent">
           SOSO
         </Link>
       }
@@ -106,8 +107,8 @@ export default function LandingHeader({
             onClick={() => handleScroll(item.id)}
             className={`relative py-2 text-sm font-semibold transition-colors duration-200 ${
               isActive
-                ? "text-accent-purple font-bold"
-                : "text-gray-500 hover:text-gray-900"
+                ? "text-accent font-bold"
+                : "text-text-muted hover:text-text"
             }`}>
             {item.label}
             {isActive && (
@@ -124,13 +125,9 @@ export default function LandingHeader({
             className="px-4 py-2 rounded-full border-2 border-transparent hover:border-primary-dark transition-all duration-200 text-sm font-semibold">
             로그인
           </button>
-          <button
-            onClick={onSignupClick}
-            className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground 
-            border-2 border-text shadow-[1.5px_1.5px_0px_0px]
-            hover:translate-y-[-2px] transition-all duration-200 text-sm font-semibold">
+          <Button variant="brutal" size="sm" onClick={onSignupClick}>
             회원가입
-          </button>
+          </Button>
         </>
       }
     />

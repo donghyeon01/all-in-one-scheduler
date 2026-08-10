@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "@/app/store/authStore";
 import { authApi } from "../api/authApi";
+import Input from "@/shared/components/ui/Input";
+import Button from "@/shared/components/button/Button";
 
 interface LoginFormProps {
   onClose?: () => void; // 모달 내부에서 페이지 이동 시 모달을 닫아주기 위한 프롭스
@@ -47,52 +49,42 @@ export default function LoginForm({
     <main>
       <div>
         <div className="text-center">
-          <h1 className="text-3xl font-bold">SOSO</h1>
-          <p className="mt-2 text-muted-foreground">
-            로그인 후 일정을 관리해보세요.
-          </p>
+          <h1 className="text-3xl font-black text-accent">SOSO</h1>
+          <p className="mt-2 text-text-muted">로그인 후 일정을 관리해보세요.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-          <div>
-            <label className="mb-2 block text-sm font-medium">이메일</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="이메일"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example@email.com"
+            required
+          />
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">비밀번호</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-xl border border-border px-4 py-3 outline-none focus:border-primary"
-              required
-            />
-          </div>
+          <Input
+            label="비밀번호"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
 
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-primary py-3 font-semibold transition hover:opacity-90">
+          <Button variant="primary" size="lg" type="submit" className="w-full">
             로그인
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center">
-          <span className="text-muted-foreground">계정이 없으신가요?</span>
+          <span className="text-text-muted">계정이 없으신가요?</span>
           <button
             onClick={(e) => {
               e.preventDefault();
               onSwitchToSignup?.();
             }}
-            className="ml-2 font-semibold hover:underline">
+            className="ml-2 text-accent font-semibold hover:underline">
             회원가입
           </button>
         </div>

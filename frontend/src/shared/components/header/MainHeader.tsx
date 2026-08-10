@@ -23,7 +23,7 @@ export default function MainHeader(): React.JSX.Element {
       key={location.pathname}
       // 1. 왼쪽 슬롯: 메인 서비스 로고
       leftSlot={
-        <Link to="/todo" className="text-2xl font-black text-accent-purple">
+        <Link to="/todo" className="text-2xl font-black text-accent">
           SOSO
         </Link>
       }
@@ -38,8 +38,8 @@ export default function MainHeader(): React.JSX.Element {
                 to={item.to}
                 className={`block rounded-lg px-2 py-2 font-bold transition md:px-0 md:py-0 ${
                   isActive
-                    ? "text-accent-purple"
-                    : "text-text-gray hover:text-text"
+                    ? "text-accent"
+                    : "text-text-secondary hover:text-text"
                 }`}>
                 {item.label}
               </Link>

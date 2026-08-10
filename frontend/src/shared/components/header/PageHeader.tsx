@@ -18,23 +18,12 @@ export default function PageHeader({ title, description, children }: Props) {
       sm:justify-between
     ">
       <div>
-        <h1
-          className="
-          text-3xl
-          font-bold
-          sm:text-4xl
-        ">
+        <h1 className="text-3xl font-extrabold text-text sm:text-4xl">
           {title}
         </h1>
 
         {description && (
-          <p
-            className="
-            mt-2
-            text-slate-500
-          ">
-            {description}
-          </p>
+          <p className="mt-2 text-text-secondary">{description}</p>
         )}
       </div>
 

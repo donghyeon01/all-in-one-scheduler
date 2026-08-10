@@ -1,13 +1,12 @@
 export const Footer = () => {
   return (
-    <footer className="border-t border-border bg-white box-border block py-10 ">
-      {/* gap-4 px-6 py-10 text-center md:flex-row md:items-center md:justify-between md:text-left */}
+    <footer className="border-t border-border bg-surface box-border block py-10">
       <div className="w-full px-5">
         {/* 푸터 상단영역 */}
-        <div className="flex justify-between gap-2 max-[768px]:flex-col  text-primary-light-foreground">
+        <div className="flex justify-between gap-2 max-[768px]:flex-col text-text-secondary">
           <div className=" items-center">
             <h2 className="text-lg font-semibold">SoSo</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-text-muted">
               소소하게 비워내는 일상의 틈
             </p>
           </div>
@@ -24,8 +23,8 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className=" border-t border-[#f5f5f5] flex justify-between items-center max-[768px]:flex-col-reverse ">
-          <p className=" text-xs text-text-muted">
+        <div className="border-t border-border flex justify-between items-center max-[768px]:flex-col-reverse">
+          <p className="text-xs text-text-muted">
             &copy; {new Date().getFullYear()} SoSo. ALL rights reserved.
           </p>
         </div>

@@ -27,7 +27,7 @@ export default function ProtectedRoute({ children }: Props) {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/auth/refresh`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
         const newAccessToken = response.data.accessToken;
         login(newAccessToken);
@@ -46,7 +46,7 @@ export default function ProtectedRoute({ children }: Props) {
 
   if (isRestoring) {
     return (
-      <div className="flex h-screen items-center justify-center font-semibold text-muted-foreground bg-background">
+      <div className="flex h-screen items-center justify-center font-semibold text-text-muted bg-background">
         로그인 상태 확인 중...
       </div>
     );
@@ -59,4 +59,3 @@ export default function ProtectedRoute({ children }: Props) {
 
   return <>{children}</>;
 }
-

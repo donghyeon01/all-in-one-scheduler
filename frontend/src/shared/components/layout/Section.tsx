@@ -14,9 +14,9 @@ export default function Section({
   ...props
 }: SectionProps) {
   const bgClasses = {
-    white: "bg-white",
-    muted: "bg-background", // #f8fbff
-    primary: "bg-primary-bg", // #edf4ff
+    white: "bg-surface",
+    muted: "bg-background",
+    primary: "bg-surface-muted",
   };
 
   return (

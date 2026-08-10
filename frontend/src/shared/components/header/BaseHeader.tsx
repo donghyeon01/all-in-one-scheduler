@@ -43,7 +43,7 @@ export default function BaseHeader({
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
                 aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
                 aria-expanded={isMobileMenuOpen}
-                className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border-2 border-border text-text transition hover:bg-primary-bg">
+                className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border-2 border-border text-text transition hover:bg-surface-muted">
                 {isMobileMenuOpen ? (
                   <X className="h-5 w-5" />
                 ) : (

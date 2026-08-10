@@ -22,9 +22,9 @@ export default function TodoInputForm({ onAdd }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-6 flex flex-col gap-3 rounded-2xl border-3 border-text bg-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:flex-row sm:items-end">
+      className="mb-6 flex flex-col gap-3 rounded-2xl border-3 border-border-strong bg-surface p-4 shadow-brutal-md sm:flex-row sm:items-end">
       <div className="flex-1">
-        <label className="mb-1 block text-xs font-black text-text">
+        <label className="mb-1 block text-xs font-bold text-text-secondary">
           무엇을 해야 하나요?
         </label>
         <Input
@@ -35,7 +35,7 @@ export default function TodoInputForm({ onAdd }: Props) {
         />
       </div>
       <div className="w-full sm:w-48">
-        <label className="mb-1 block text-xs font-black text-text">
+        <label className="mb-1 block text-xs font-bold text-text-secondary">
           마감 기한
         </label>
         <Input

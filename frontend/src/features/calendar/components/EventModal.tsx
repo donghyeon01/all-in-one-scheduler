@@ -108,13 +108,12 @@ export default function EventModal({
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border px-4 py-2 font-bold text-slate-500 hover:bg-slate-50 transition">
+          <Button variant="ghost" size="md" type="button" onClick={onClose}>
             취소
-          </button>
-          <Button type="submit">저장</Button>
+          </Button>
+          <Button variant="primary" size="md" type="submit">
+            저장
+          </Button>
         </div>
       </form>
     </Modal>

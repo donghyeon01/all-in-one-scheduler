@@ -27,16 +27,16 @@ export default function TodoItem({
             type="checkbox"
             checked={completed}
             onChange={() => {}} // 부모의 onClick에서 처리하므로 경고 방지용 빈 함수 지정
-            className="w-5 h-5 cursor-pointer accent-success-dark"
+            className="w-5 h-5 cursor-pointer accent-success"
           />
 
           <div>
             <h3
-              className={`font-semibold ${completed ? "line-through text-slate-400" : ""}`}>
+              className={`font-semibold ${completed ? "line-through text-text-muted" : "text-text"}`}>
               {title}
             </h3>
 
-            <p className="text-sm text-slate-500">{dueDate}</p>
+            <p className="text-sm text-text-secondary">{dueDate}</p>
           </div>
         </div>
 

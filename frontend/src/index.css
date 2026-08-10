@@ -1,47 +1,102 @@
 @import "tailwindcss";
 
+/* ============================================================
+ * SOSO 디자인 토큰 시스템 (재설계)
+ * "소소하게, 하지만 또렷하게" — 파스텔 베이스 + 네오-브루탈 포인트
+ * ============================================================ */
 @theme {
-  --color-background: #f8fbff;
-  --color-primary-bg: #edf4ff;
+  /* === 배경 레이어 === */
+  --color-background: #f8fbff; /* 전체 배경 */
+  --color-surface: #ffffff; /* 카드/모달 배경 */
+  --color-surface-muted: #edf4ff; /* 섹션 구분 배경 (구 primary-bg) */
 
-  --color-card: #ffffff;
-  --color-card-foreground: #334155;
+  /* === 프라이머리 (블루 계열) === */
+  --color-primary: #c8dbfe; /* 버튼/배지 배경 */
+  --color-primary-hover: #b3ccfa; /* 호버 상태 */
+  --color-primary-dark: #3b568f; /* 보더/텍스트 강조 */
 
-  --color-primary: #c8dbfe;
-  --color-primary-foreground: #1e293b;
+  /* === 액센트 (퍼플 — SOSO 시그니처) === */
+  --color-accent: #7b61ff; /* 로고, 활성 상태, CTA (구 accent-purple) */
+  --color-accent-soft: #dccfff; /* 액센트 배경 (구 secondary) */
+  --color-accent-pink: #ffd6e7; /* 핑크 포인트 (구 accent) */
 
-  --color-primary-dark: #3b568f;
+  /* === 텍스트 === */
+  --color-text: #1e2538; /* 메인 텍스트 + 네오-브루탈 보더/섀도우 */
+  --color-text-secondary: #616b82; /* 서브 텍스트 (구 text-gray) */
+  --color-text-muted: #94a3b8; /* 플레이스홀더, 비활성 (구 muted-foreground 통합) */
 
+  /* === 상태 색상 === */
+  --color-success: #9bf78f; /* 성공 배지 */
+  --color-success-soft: #e6f4ea; /* 성공 배경 */
+  --color-success-text: #2b6938; /* 성공 텍스트 */
+  --color-success-light: #cff4de; /* 성공 라이트 (ResultCard용) */
+  --color-warning: #ffe5b8; /* 경고 배지 */
+  --color-warning-text: #86640d; /* 경고 텍스트 */
+  --color-danger: #ffd6d6; /* 위험 배지 */
+  --color-danger-text: #b91c1c; /* 위험 텍스트 */
+
+  /* === 보더 === */
+  --color-border: #dbe7ff; /* 기본 보더 */
+  --color-border-strong: #1e2538; /* 네오-브루탈 보더 (text와 동일, 의미 분리) */
+  --color-input: #dbe7ff; /* 인풋 보더 */
+
+  /* === 마이크 === */
+  --color-milk-white: #fcfbf7; /* 따뜻한 화이트 포인트 */
+
+  /* === 링 === */
+  --color-ring: #7b61ff; /* 포커스 링 (accent로 통일) */
+
+  /* === 섀도우 === */
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04); /* 클린 카드 */
+  --shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.08); /* 호버 카드 */
+  --shadow-brutal-sm: 2px 2px 0px 0px var(--color-text); /* 네오-브루탈 S */
+  --shadow-brutal-md: 4px 4px 0px 0px var(--color-text); /* 네오-브루탈 M */
+  --shadow-brutal-lg: 6px 6px 0px 0px var(--color-text); /* 네오-브루탈 L */
+  --shadow-brutal-accent: 6px 6px 0px 0px var(--color-accent); /* 네오-브루탈 액센트 */
+
+  /* === 타이포그래피 === */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+
+  /* 폰트 웨이트 5단계 */
+  --font-weight-medium: 500; /* 본문 */
+  --font-weight-semibold: 600; /* 라벨, 강조 본문 */
+  --font-weight-bold: 700; /* 소제목, 버튼 */
+  --font-weight-extrabold: 800; /* 페이지 제목, 카드 타이틀 */
+  --font-weight-black: 900; /* 히어로 타이틀, 로고 */
+
+  /* === 애니메이션 === */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* ============================================================
+   * 구 토큰 별칭 (마이그레이션 호환용)
+   * Phase 2-3 리팩토링 완료 후 제거 예정
+   * ============================================================ */
+  --color-primary-bg: var(--color-surface-muted);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-text-secondary);
+  --color-primary-foreground: var(--color-text);
   --color-primary-light: #e1ecff;
-  --color-primary-light-foreground: #334155;
-
-  --color-text: #1e2538;
-  --color-text-gray: #616b82;
-
-  --color-secondary: #dccfff;
+  --color-primary-light-foreground: var(--color-text-secondary);
+  --color-text-gray: var(--color-text-secondary);
+  --color-secondary: var(--color-accent-soft);
   --color-secondary-foreground: #3b1e54;
-
-  --color-milk-white: #fcfbf7;
-  --color-success-muted: #e6f4ea;
+  --color-accent-foreground: var(--color-text);
+  --color-accent-purple: var(--color-accent);
+  --color-success-muted: var(--color-success-soft);
   --color-success-pastel: #cff4d2;
-  --color-success-dark: #9bf78f;
-  --color-success-foreground: #2b6938;
-  --color-success-light: #cff4de;
+  --color-success-dark: var(--color-success);
+  --color-success-foreground: var(--color-success-text);
+  --color-warn: var(--color-warning);
+  --color-warn-foreground: var(--color-warning-text);
+  --color-muted: var(--color-surface-muted);
+  --color-muted-foreground: var(--color-text-muted);
+  --color-destructive: var(--color-danger);
+  --color-danger-foreground: var(--color-danger-text);
+}
 
-  --color-accent: #ffd6e7;
-  --color-accent-foreground: #334155;
-  --color-accent-purple: #7b61ff;
-  --color-warn: #ffe5b8;
-  --color-warn-foreground: #86640d;
-
-  --color-muted: #eef4ff;
-  --color-muted-foreground: #64748b;
-
-  --color-destructive: #ffd6d6;
-
-  --color-border: #dbe7ff;
-  --color-input: #dbe7ff;
-  --color-ring: #c8dbfe;
-  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
-  --shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.08);
+/* Pretendard 전역 적용 */
+body {
+  font-family: var(--font-sans);
 }

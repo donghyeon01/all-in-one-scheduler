@@ -14,10 +14,10 @@ export default function NeoButton({
   ...props
 }: NeoButtonProps) {
   const baseClass =
-    "rounded-2xl px-6 py-4 font-extrabold border-2 border-text shadow-[3px_3px_0px_0px_#1e2538] hover:translate-y-[-2px] transition-all duration-200 hover:scale-105 inline-block text-center";
+    "rounded-2xl px-6 py-4 font-extrabold border-2 border-border-strong shadow-brutal-md hover:translate-y-[-2px] transition-all duration-200 hover:scale-105 inline-block text-center";
 
   const variantClasses = {
-    purple: "bg-accent-purple text-white",
+    purple: "bg-accent text-white",
     white: "bg-milk-white text-text",
     primary: "bg-primary text-text",
   };

@@ -17,10 +17,11 @@ export default function TodoFilter({ current, onChange }: Props) {
             px-4
             py-2
             border-2
+            border-border
             font-semibold
-            
+            transition-all duration-200
 
-            ${current === filter ? "bg-success-muted text-black shadow-[1px_1px_0px_0px]" : "font-bold text-primary-dark"}
+            ${current === filter ? "bg-surface-muted text-text shadow-brutal-sm" : "text-text-secondary hover:text-text"}
           `}>
           {filter}
         </button>

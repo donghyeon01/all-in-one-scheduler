@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,24 +33,16 @@ export default function Modal({
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-      {/* 2. 실제 모달 콘텐츠 영역 (안쪽 클릭 시 닫히는 현상 방지를 위해 e.stopPropagation 적용) */}
+      {/* 2. 실제 모달 콘텐츠 영역 (안쪽 클릭 시 닫히는 현상 방지) */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 rounded-3xl border-border bg-white p-5 sm:p-8 shadow-md">
-        {title && (
-          <h2
-            className="
-            text-xl
-            font-bold
-          ">
-            {title}
-          </h2>
-        )}
-        {/* 우측 상단 X 닫기 버튼 */}
+        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200 rounded-3xl border-2 border-border bg-surface p-5 sm:p-8 shadow-brutal-md">
+        {title && <h2 className="text-xl font-bold text-text">{title}</h2>}
+        {/* 우측 상단 X 닫기 버튼 (Lucide 아이콘) */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 sm:right-6 sm:top-6 text-gray-400 hover:text-gray-600 z-10 font-bold">
-          ✕
+          className="absolute right-4 top-4 sm:right-6 sm:top-6 text-text-muted hover:text-text z-10 transition-colors">
+          <X className="h-5 w-5" />
         </button>
 
         {children}
@@ -57,70 +50,3 @@ export default function Modal({
     </div>
   );
 }
-
-// interface Props {
-//   open: boolean;
-//   title: string;
-//   children: React.ReactNode;
-//   onClose: () => void;
-// }
-
-// export default function Modal({
-//   open,
-//   title,
-//   children,
-//   onClose,
-// }: Props) {
-//   if (!open) return null;
-
-//   return (
-//     <div
-//       className="
-//       fixed
-//       inset-0
-//       z-50
-//       flex
-//       items-center
-//       justify-center
-//       bg-black/40
-//     "
-//     >
-//       <div
-//         className="
-//         w-full
-//         max-w-lg
-//         rounded-2xl
-//         bg-white
-//         p-6
-//       "
-//       >
-//         <div
-//           className="
-//           mb-4
-//           flex
-//           items-center
-//           justify-between
-//         "
-//         >
-//           <h2
-//             className="
-//             text-xl
-//             font-bold
-//           "
-//           >
-//             {title}
-//           </h2>
-
-//           <button
-//             onClick={onClose}
-//             className="text-xl"
-//           >
-//             ×
-//           </button>
-//         </div>
-
-//         {children}
-//       </div>
-//     </div>
-//   );
-// }

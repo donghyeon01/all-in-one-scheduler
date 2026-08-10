@@ -138,7 +138,12 @@ export default function TodoPage() {
     <>
       <PageHeader title="할 일 관리" description="오늘의 할 일을 관리하세요.">
         {/* prompt를 띄우는 대신 모달을 열도록 수정 */}
-        <Button onClick={() => setIsModalOpen(true)}>+ 할 일 추가</Button>
+        <Button
+          variant="primary"
+          size="md"
+          onClick={() => setIsModalOpen(true)}>
+          + 할 일 추가
+        </Button>
       </PageHeader>
 
       <TodoStats
@@ -220,13 +225,16 @@ export default function TodoPage() {
             />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
+              variant="ghost"
+              size="md"
               type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="rounded-xl border-2 border-text bg-white px-4 py-2 font-bold text-text shadow-[2px_2px_0px_0px_#1e2538] transition hover:bg-slate-50 cursor-pointer">
+              onClick={() => setIsModalOpen(false)}>
               취소
-            </button>
-            <Button type="submit">등록하기</Button>
+            </Button>
+            <Button variant="primary" size="md" type="submit">
+              등록하기
+            </Button>
           </div>
         </form>
       </Modal>

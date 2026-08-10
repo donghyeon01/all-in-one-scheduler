@@ -35,7 +35,7 @@ export default function ProblemSection() {
         badge="Problem"
         title={
           <>
-            이런 경험 <span className="text-accent-purple">있으신가요?</span>
+            이런 경험 <span className="text-accent">있으신가요?</span>
           </>
         }
         description="약속 한 번 잡으려다 진이 다 빠졌던 슬픈 경험이 있다면, 이제 SOSO가 도와드릴게요!"
@@ -45,7 +45,7 @@ export default function ProblemSection() {
         {problems.map((problem) => (
           <Card
             key={problem.title}
-            variant="landing"
+            variant="brutal"
             title={problem.title}
             description={problem.description}
             icon={problem.icon}
