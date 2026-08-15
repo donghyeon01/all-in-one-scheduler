@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Button from "@/shared/components/button/Button";
 import Input from "@/shared/components/ui/Input";
 import Card from "@/shared/components/card/Card";
@@ -19,21 +20,13 @@ export default function SchedulingForm({ onSubmit }: SchedulingFormProps) {
   const [endDate, setEndDate] = useState("");
 
   // 친구 선택을 위한 상태 값
-  const [friends, setFriends] = useState<FriendUser[]>([]);
   const [selectedFriendIds, setSelectedFriendIds] = useState<number[]>([]);
 
-  // 컴포넌트 마운트 시 친구 목록 로드
-  useEffect(() => {
-    const loadFriends = async () => {
-      try {
-        const data = await schedulingApi.getFriends();
-        setFriends(data);
-      } catch (error) {
-        console.error("친구 목록을 불러오지 못했습니다.", error);
-      }
-    };
-    loadFriends();
-  }, []);
+  // React Query로 친구 목록 로드 (캐싱 + 중복 요청 방지 + 로딩/에러 상태 관리)
+  const { data: friends = [] } = useQuery<FriendUser[]>({
+    queryKey: ["scheduling-friends"],
+    queryFn: schedulingApi.getFriends,
+  });
 
   // 체크박스 선택/해제 핸들러
   const handleFriendCheck = (friendId: number, isChecked: boolean) => {

@@ -37,7 +37,8 @@ public class SchedulingService {
         participants.add(user);
 
         // 수정 반영: 수락된(ACCEPTED) 상태의 정식 친구 목록만 조회해 옵니다.
-        List<Friendship> acceptedFriendships = friendshipRepository.findByUserAndStatus(user, FriendshipStatus.ACCEPTED);
+        List<Friendship> acceptedFriendships = friendshipRepository.findByUserAndStatus(user,
+                FriendshipStatus.ACCEPTED);
 
         if (request.getFriendIds() != null && !request.getFriendIds().isEmpty()) {
             // 사용자가 화면에서 특정 친구들을 체크(선택)한 경우 -> 선택된 친구만 필터링하여 참여자에 추가
@@ -56,8 +57,11 @@ public class SchedulingService {
 
         int totalCount = participants.size();
 
-        // 2. 참여자들의 모든 스케줄(이벤트) 조회
-        List<Event> allEvents = eventRepository.findByUserIn(participants);
+        // 2. 참여자들의 스케줄(이벤트) 조회
+        // 성능 최적화: 검색 기간으로 한정하여 메모리 로드 최소화 (전체 로드 -> 범위 필터링)
+        LocalDateTime rangeStart = request.getStartDate().atStartOfDay();
+        LocalDateTime rangeEnd = request.getEndDate().atTime(LocalTime.MAX);
+        List<Event> allEvents = eventRepository.findByUserInAndDateRange(participants, rangeStart, rangeEnd);
 
         // 사용자별 이벤트로 그룹화 (충돌 검사 성능 최적화)
         Map<Long, List<Event>> eventsByUser = new HashMap<>();
@@ -91,8 +95,7 @@ public class SchedulingService {
                     new TimeBlockConfig(LocalTime.of(10, 0), LocalTime.of(12, 0), "오전 10:00 ~ 오후 12:00"),
                     new TimeBlockConfig(LocalTime.of(14, 0), LocalTime.of(16, 0), "오후 02:00 ~ 오후 04:00"),
                     new TimeBlockConfig(LocalTime.of(18, 0), LocalTime.of(20, 0), "오후 06:00 ~ 오후 08:00"),
-                    new TimeBlockConfig(LocalTime.of(20, 0), LocalTime.of(22, 0), "오후 08:00 ~ 오후 10:00")
-            );
+                    new TimeBlockConfig(LocalTime.of(20, 0), LocalTime.of(22, 0), "오후 08:00 ~ 오후 10:00"));
         }
 
         List<SchedulingResponse> candidates = new ArrayList<>();

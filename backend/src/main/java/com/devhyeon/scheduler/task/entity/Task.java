@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tasks")
+@Table(name = "tasks", indexes = {
+        @Index(name = "idx_task_user", columnList = "user_id"),
+        @Index(name = "idx_task_user_completed", columnList = "user_id, completed")
+})
 public class Task {
 
     @Id

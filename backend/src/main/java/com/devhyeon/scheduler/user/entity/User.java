@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "users")
-
+@Table(name = "users", indexes = {
+        @Index(name = "idx_user_email", columnList = "email")
+})
 public class User {
     @Id // 기본 키 Primary key임을 나타냄
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 값 자동생성 auto_increment

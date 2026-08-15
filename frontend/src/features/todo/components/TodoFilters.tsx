@@ -1,17 +1,26 @@
+import { memo, useCallback } from "react";
+
 interface Props {
   current: string;
   onChange: (value: string) => void;
 }
 
-export default function TodoFilter({ current, onChange }: Props) {
-  const filters = ["전체", "진행 중", "완료"];
+const FILTERS = ["전체", "진행 중", "완료"] as const;
+
+// memo 적용: current가 변경될 때만 리렌더
+function TodoFilter({ current, onChange }: Props) {
+  // useCallback으로 핸들러 고정
+  const handleClick = useCallback(
+    (filter: string) => () => onChange(filter),
+    [onChange],
+  );
 
   return (
     <div className="mb-6 flex flex-wrap gap-2">
-      {filters.map((filter) => (
+      {FILTERS.map((filter) => (
         <button
           key={filter}
-          onClick={() => onChange(filter)}
+          onClick={handleClick(filter)}
           className={`
             rounded-full
             px-4
@@ -29,3 +38,5 @@ export default function TodoFilter({ current, onChange }: Props) {
     </div>
   );
 }
+
+export default memo(TodoFilter);

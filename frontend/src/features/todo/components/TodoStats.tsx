@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Card from "@/shared/components/card/Card";
 
 interface Props {
@@ -6,7 +7,8 @@ interface Props {
   completed: number;
 }
 
-export default function TodoStats({ total, active, completed }: Props) {
+// memo 적용: 숫자 props가 변경될 때만 리렌더
+function TodoStats({ total, active, completed }: Props) {
   return (
     <div className="mb-8 grid gap-4 md:grid-cols-3">
       <Card>
@@ -26,3 +28,5 @@ export default function TodoStats({ total, active, completed }: Props) {
     </div>
   );
 }
+
+export default memo(TodoStats);

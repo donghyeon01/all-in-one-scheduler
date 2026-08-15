@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import Badge from "@/shared/components/badge/Badge";
 import Card from "@/shared/components/card/Card";
 
@@ -9,18 +10,16 @@ interface Props {
   onToggle: (id: number) => void; // [추가] 클릭 시 부모 상태를 바꿀 콜백 수신
 }
 
-export default function TodoItem({
-  id,
-  title,
-  completed,
-  dueDate,
-  onToggle,
-}: Props) {
+// memo 적용: 부모 리렌더 시 props가 동일하면 리렌더 생략 (리스트 성능 향상)
+function TodoItem({ id, title, completed, dueDate, onToggle }: Props) {
+  // useCallback으로 핸들러 고정하여 하위 컴포넌트 불필요 리렌더 방지
+  const handleToggle = useCallback(() => onToggle(id), [id, onToggle]);
+
   return (
     <Card className="mb-3">
       {/* 텍스트나 체크박스 영역 어디를 눌러도 인터랙션이 발생하도록 label 구조화 또는 클릭 이벤트 부여 */}
       <div
-        onClick={() => onToggle(id)}
+        onClick={handleToggle}
         className="flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none">
         <div className="flex flex-1 min-w-0 gap-4 items-center">
           <input
@@ -51,3 +50,5 @@ export default function TodoItem({
     </Card>
   );
 }
+
+export default memo(TodoItem);

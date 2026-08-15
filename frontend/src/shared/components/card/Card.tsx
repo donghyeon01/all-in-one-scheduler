@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 // 신규 variant: clean | brutal | brutal-accent
 // 구 variant 호환: default → clean, neo/landing → brutal
@@ -42,7 +42,7 @@ const variantClasses = {
     "rounded-3xl border-3 border-border-strong bg-surface p-6 shadow-brutal-accent transition-all duration-300 hover:-translate-y-1",
 };
 
-export default function Card({
+function Card({
   variant = "clean",
   children,
   className = "",
@@ -114,3 +114,5 @@ export default function Card({
     </div>
   );
 }
+
+export default memo(Card);

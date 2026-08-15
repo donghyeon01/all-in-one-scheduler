@@ -1,6 +1,5 @@
 package com.devhyeon.scheduler.event.service;
 
-
 import com.devhyeon.scheduler.event.dto.EventCreateRequest;
 import com.devhyeon.scheduler.event.dto.EventResponse;
 import com.devhyeon.scheduler.event.dto.EventUpdateRequest;
@@ -20,88 +19,87 @@ import java.util.NoSuchElementException;
 @Transactional
 @RequiredArgsConstructor
 public class EventService {
-    private final EventRepository eventRepository;
+        private final EventRepository eventRepository;
 
-    public EventResponse createEvent(
-            EventCreateRequest request,
-            User user
-    ){
-        Event event = Event.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .location(request.getLocation())
-                .allDay(request.isAllDay())
-                .user(user)
-                .build();
+        public EventResponse createEvent(
+                        EventCreateRequest request,
+                        User user) {
+                Event event = Event.builder()
+                                .title(request.getTitle())
+                                .description(request.getDescription())
+                                .startTime(request.getStartTime())
+                                .endTime(request.getEndTime())
+                                .location(request.getLocation())
+                                .allDay(request.isAllDay())
+                                .user(user)
+                                .build();
 
-        eventRepository.save(event);
-        return EventResponse.from(event);
-    }
-
-    public List<EventResponse> getEvents(User user){
-        return eventRepository.findByUser(user)
-                .stream().map(EventResponse::from)
-                .toList();
-    }
-
-    public EventResponse updateEvent(Long eventId, EventUpdateRequest request, User loginUser){
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없습니다."));
-
-        validateOwner(event, loginUser);
-
-        event.update(
-                request.getTitle(),
-                request.getDescription(),
-                request.getStartTime(),
-                request.getEndTime(),
-                request.getLocation(),
-                request.isAllDay()
-        );
-
-        eventRepository.save(event);
-        return EventResponse.from(event);
-    }
-
-    public void deleteEvent(
-            Long eventId,
-            User loginUser
-    ) {
-
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없습니다."));
-
-        validateOwner(event, loginUser);
-
-        eventRepository.delete(event);
-    }
-
-    private void validateOwner(
-            Event event,
-            User loginUser
-    ) {
-
-        if (!event.getUser().getId().equals(loginUser.getId())) {
-            throw new AccessDeniedException("권한이 없습니다.");
+                eventRepository.save(event);
+                return EventResponse.from(event);
         }
-    }
-    public List<EventResponse> getEventsByRange(
-            User user,
-            LocalDateTime start,
-            LocalDateTime end
-    ) {
 
-        return eventRepository
-                .findByUserAndStartTimeBetween(
-                        user,
-                        start,
-                        end
-                )
-                .stream()
-                .map(EventResponse::from)
-                .toList();
-    }
+        // 읽기 전용 트랜잭션: 플러시 생략으로 성능 향상
+        @Transactional(readOnly = true)
+        public List<EventResponse> getEvents(User user) {
+                return eventRepository.findByUser(user)
+                                .stream().map(EventResponse::from)
+                                .toList();
+        }
+
+        public EventResponse updateEvent(Long eventId, EventUpdateRequest request, User loginUser) {
+                Event event = eventRepository.findById(eventId)
+                                .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없습니다."));
+
+                validateOwner(event, loginUser);
+
+                event.update(
+                                request.getTitle(),
+                                request.getDescription(),
+                                request.getStartTime(),
+                                request.getEndTime(),
+                                request.getLocation(),
+                                request.isAllDay());
+
+                // dirty checking으로 자동 저장되므로 불필요한 save 호출 제거
+                return EventResponse.from(event);
+        }
+
+        public void deleteEvent(
+                        Long eventId,
+                        User loginUser) {
+
+                Event event = eventRepository.findById(eventId)
+                                .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없습니다."));
+
+                validateOwner(event, loginUser);
+
+                eventRepository.delete(event);
+        }
+
+        private void validateOwner(
+                        Event event,
+                        User loginUser) {
+
+                if (!event.getUser().getId().equals(loginUser.getId())) {
+                        throw new AccessDeniedException("권한이 없습니다.");
+                }
+        }
+
+        // 읽기 전용 트랜잭션: 날짜 범위 조회
+        @Transactional(readOnly = true)
+        public List<EventResponse> getEventsByRange(
+                        User user,
+                        LocalDateTime start,
+                        LocalDateTime end) {
+
+                return eventRepository
+                                .findByUserAndStartTimeBetween(
+                                                user,
+                                                start,
+                                                end)
+                                .stream()
+                                .map(EventResponse::from)
+                                .toList();
+        }
 
 }

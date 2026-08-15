@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import Card from "@/shared/components/card/Card";
 import type { CalendarEvent } from "../api/eventsApi";
 
@@ -5,29 +6,34 @@ interface CalendarSidebarProps {
   events: CalendarEvent[];
 }
 
-export default function CalendarSidebar({ events }: CalendarSidebarProps) {
-  // 1. 이번 주 일정 개수 계산 (현재 시각 기준 7일 이내 일정 계산)
-  const now = new Date();
-  const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+// memo 적용: events가 변경될 때만 리렌더
+function CalendarSidebar({ events }: CalendarSidebarProps) {
+  // useMemo: 이번 주 일정 계산 캐싱 (events 변경 시에만 재계산)
+  const thisWeekEvents = useMemo(() => {
+    const now = new Date();
+    const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    return events.filter((event) => {
+      const eventDate = new Date(event.start);
+      return eventDate >= now && eventDate <= oneWeekLater;
+    });
+  }, [events]);
 
-  const thisWeekEvents = events.filter((event) => {
-    const eventDate = new Date(event.start);
-    return eventDate >= now && eventDate <= oneWeekLater;
-  });
+  // useMemo: 가장 가까운 마감 일정 캐싱
+  const upcomingDeadlineEvent = useMemo(() => {
+    const now = new Date();
+    return events
+      .filter((event) => new Date(event.start) >= now)
+      .sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      )[0];
+  }, [events]);
 
-  // 2. 가장 가까운 다가오는 마감 일정 추적
-  const upcomingDeadlineEvent = events
-    .filter((event) => new Date(event.start) >= now)
-    .sort(
-      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
-    )[0];
-
-  // D-Day 계산 함수
+  // D-Day 계산 함수 (events와 무관한 순수 함수)
   const getDDayString = (targetDateStr: string) => {
     const target = new Date(targetDateStr);
     // 날짜 정규화 (시분초 제외)
     target.setHours(0, 0, 0, 0);
-    const today = new Date(now);
+    const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const diffTime = target.getTime() - today.getTime();
@@ -68,3 +74,5 @@ export default function CalendarSidebar({ events }: CalendarSidebarProps) {
     </div>
   );
 }
+
+export default memo(CalendarSidebar);

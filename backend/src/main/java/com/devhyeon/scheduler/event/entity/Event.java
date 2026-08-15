@@ -1,6 +1,5 @@
 package com.devhyeon.scheduler.event.entity;
 
-
 import com.devhyeon.scheduler.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "events")
+@Table(name = "events", indexes = {
+        @Index(name = "idx_event_user_start", columnList = "user_id, start_time"),
+        @Index(name = "idx_event_user_end", columnList = "user_id, end_time")
+})
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +35,7 @@ public class Event {
 
     private String location;
     @Column(nullable = false)
-    private  boolean allDay;
+    private boolean allDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // user테이블에 있는 id 참조
@@ -45,13 +47,12 @@ public class Event {
             LocalDateTime startTime,
             LocalDateTime endTime,
             String location,
-            boolean allDay
-    ){
-        this.title=title;
-        this.description=description;
-        this.startTime=startTime;
-        this.endTime=endTime;
-        this.location=location;
-        this.allDay=allDay;
+            boolean allDay) {
+        this.title = title;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.allDay = allDay;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -8,7 +8,8 @@ interface ModalProps {
   title?: string;
 }
 
-export default function Modal({
+// memo 적용: 닫혀있을 때 null 반환으로 리렌더 비용 최소화
+function Modal({
   isOpen,
   onClose,
   children,
@@ -50,3 +51,5 @@ export default function Modal({
     </div>
   );
 }
+
+export default memo(Modal);

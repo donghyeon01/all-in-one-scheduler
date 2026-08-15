@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EventApi } from "@fullcalendar/core";
 import {
@@ -39,8 +39,10 @@ export function useCalendarModals() {
   );
 
   // 캐시 무효화 → CalendarPage/CalendarSidebar 등 EVENTS_QUERY_KEY를 구독 중인 곳들이 자동 재조회됨
-  const invalidateEvents = () =>
-    queryClient.invalidateQueries({ queryKey: EVENTS_QUERY_KEY });
+  const invalidateEvents = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: EVENTS_QUERY_KEY }),
+    [queryClient],
+  );
 
   const createEventMutation = useMutation({
     mutationFn: eventsApi.createEvent,
@@ -66,14 +68,14 @@ export function useCalendarModals() {
     onError: (error) => console.error("일정 삭제 실패:", error),
   });
 
-  const handleDateClick = (date: string) => {
+  const handleDateClick = useCallback((date: string) => {
     // date가 "2026-07-13" 형태로 들어오면 현재 시간 또는 기본값(예: 오전 09:00)을 붙여서 포맷팅합니다.
     const defaultDateTime = `${date}T09:00`;
     setSelectedDate(defaultDateTime);
     setIsAddOpen(true);
-  };
+  }, []);
 
-  const handleEventClick = (event: EventApi) => {
+  const handleEventClick = useCallback((event: EventApi) => {
     setSelectedEvent({
       id: event.id,
       title: event.title || "",
@@ -84,62 +86,63 @@ export function useCalendarModals() {
       allDay: event.allDay,
     });
     setIsDetailOpen(true);
-  };
+  }, []);
 
-  const handleDeleteTrigger = () => {
+  const handleDeleteTrigger = useCallback(() => {
     setIsDetailOpen(false);
     setIsConfirmDeleteOpen(true);
-  };
+  }, []);
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     if (selectedEvent?.id) {
       deleteEventMutation.mutate(selectedEvent.id);
     }
     setIsConfirmDeleteOpen(false);
     setSelectedEvent(null);
-  };
+  }, [selectedEvent, deleteEventMutation]);
 
-  const handleEditTrigger = () => {
+  const handleEditTrigger = useCallback(() => {
     setIsDetailOpen(false);
     setIsEditOpen(true);
-  };
+  }, []);
 
-  const handleEditSubmit = (data: {
-    id: string;
-    title: string;
-    start: string;
-    end: string;
-    location: string;
-  }) => {
-    updateEventMutation.mutate({
-      eventId: data.id,
-      data: {
+  const handleEditSubmit = useCallback(
+    (data: {
+      id: string;
+      title: string;
+      start: string;
+      end: string;
+      location: string;
+    }) => {
+      updateEventMutation.mutate({
+        eventId: data.id,
+        data: {
+          title: data.title,
+          startTime: toBackendDateTime(data.start),
+          endTime: toBackendDateTime(data.end),
+          location: data.location,
+          allDay: false,
+        },
+      });
+      setIsEditOpen(false);
+      setSelectedEvent(null);
+    },
+    [updateEventMutation],
+  );
+
+  const handleAddSubmit = useCallback(
+    (data: { title: string; start: string; end: string; location: string }) => {
+      createEventMutation.mutate({
         title: data.title,
         startTime: toBackendDateTime(data.start),
         endTime: toBackendDateTime(data.end),
         location: data.location,
         allDay: false,
-      },
-    });
-    setIsEditOpen(false);
-    setSelectedEvent(null);
-  };
-
-  const handleAddSubmit = (data: {
-    title: string;
-    start: string;
-    end: string;
-    location: string;
-  }) => {
-    createEventMutation.mutate({
-      title: data.title,
-      startTime: toBackendDateTime(data.start),
-      endTime: toBackendDateTime(data.end),
-      location: data.location,
-      allDay: false,
-    });
-    setIsAddOpen(false);
-  };
+      });
+      setIsAddOpen(false);
+    },
+    [createEventMutation],
+  );
 
   return {
     state: {

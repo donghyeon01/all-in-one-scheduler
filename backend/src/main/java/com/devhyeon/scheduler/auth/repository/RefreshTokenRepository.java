@@ -3,6 +3,9 @@ package com.devhyeon.scheduler.auth.repository;
 import com.devhyeon.scheduler.auth.entity.RefreshToken;
 import com.devhyeon.scheduler.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +19,12 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     List<RefreshToken> findAllByUserOrderByLastAccessedAtAsc(User user);
 
-    void deleteByTokenHash(String tokenHash);
+    // 벌크 삭제: 조회-삭제 2단계 쿼리를 1단계 DELETE로 최적화
+    @Modifying
+    @Query("DELETE FROM RefreshToken r WHERE r.tokenHash = :tokenHash")
+    void deleteByTokenHash(@Param("tokenHash") String tokenHash);
 
-    void deleteByUser(User user);
+    @Modifying
+    @Query("DELETE FROM RefreshToken r WHERE r.user = :user")
+    void deleteByUser(@Param("user") User user);
 }

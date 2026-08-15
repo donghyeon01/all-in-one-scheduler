@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import type { ButtonHTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 
@@ -33,7 +34,7 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: "px-6 py-3.5 text-base",
 };
 
-export default function Button({
+function Button({
   variant = "primary",
   size = "md",
   to,
@@ -41,13 +42,17 @@ export default function Button({
   className = "",
   ...props
 }: Props) {
-  const combined = `
+  // useMemo: variant/size/className가 동일하면 클래스 문자열 재계산 생략
+  const combined = useMemo(
+    () => `
     inline-flex items-center justify-center gap-1
     transition-all duration-200 cursor-pointer
     ${variantClasses[variant]}
     ${sizeClasses[size]}
     ${className}
-  `;
+  `,
+    [variant, size, className],
+  );
 
   if (to) {
     return (
@@ -63,3 +68,5 @@ export default function Button({
     </button>
   );
 }
+
+export default memo(Button);

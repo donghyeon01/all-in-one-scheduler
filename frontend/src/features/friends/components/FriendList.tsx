@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import Card from "@/shared/components/card/Card";
 import Avatar from "@/shared/components/ui/Avatar";
 import Button from "@/shared/components/button/Button";
@@ -11,12 +12,23 @@ interface FriendListProps {
   onAcceptFriend?: (id: string) => void;
 }
 
-export default function FriendList({
+// memo 적용: friends/type이 변경될 때만 리렌더
+function FriendList({
   friends,
   type,
   onDeleteFriend,
   onAcceptFriend,
 }: FriendListProps) {
+  // useCallback으로 핸들러 고정하여 버튼 불필요 리렌더 방지
+  const handleDelete = useCallback(
+    (id: string) => () => onDeleteFriend?.(id),
+    [onDeleteFriend],
+  );
+  const handleAccept = useCallback(
+    (id: string) => () => onAcceptFriend?.(id),
+    [onAcceptFriend],
+  );
+
   if (friends.length === 0) {
     return <EmptyState title="목록이 비어 있습니다." />;
   }
@@ -48,7 +60,7 @@ export default function FriendList({
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => onDeleteFriend?.(friend.id)}>
+                  onClick={handleDelete(friend.id)}>
                   삭제
                 </Button>
               </>
@@ -60,13 +72,13 @@ export default function FriendList({
                   variant="brutal"
                   size="sm"
                   className="flex-1"
-                  onClick={() => onAcceptFriend?.(friend.id)}>
+                  onClick={handleAccept(friend.id)}>
                   수락
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onDeleteFriend?.(friend.id)}>
+                  onClick={handleDelete(friend.id)}>
                   거절
                 </Button>
               </>
@@ -77,7 +89,7 @@ export default function FriendList({
                 variant="ghost"
                 size="sm"
                 className="flex-1"
-                onClick={() => onDeleteFriend?.(friend.id)}>
+                onClick={handleDelete(friend.id)}>
                 요청 취소
               </Button>
             )}
@@ -87,3 +99,5 @@ export default function FriendList({
     </div>
   );
 }
+
+export default memo(FriendList);

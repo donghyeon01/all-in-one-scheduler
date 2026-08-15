@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(
-        name = "friendships",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "friend_id"})
-        }
-)
+@Table(name = "friendships", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "user_id", "friend_id" })
+}, indexes = {
+        @Index(name = "idx_friendship_user_status", columnList = "user_id, status"),
+        @Index(name = "idx_friendship_friend_status", columnList = "friend_id, status")
+})
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

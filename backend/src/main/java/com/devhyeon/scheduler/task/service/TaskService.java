@@ -39,6 +39,7 @@ public class TaskService {
     }
 
     // CRUD - R
+    @Transactional(readOnly = true)
     public List<TaskResponse> getTasks(User user) {
 
         return taskRepository.findByUser(user)
@@ -58,7 +59,7 @@ public class TaskService {
 
         task.update(request.getTitle(), request.getDueDate(), request.isCompleted());
 
-        taskRepository.save(task);
+        // dirty checking으로 자동 저장되므로 불필요한 save 호출 제거
         return TaskResponse.from(task);
     }
 
