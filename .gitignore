@@ -80,3 +80,16 @@ docker/mysql/data/
 
 *.swp
 *.swo
+
+# =========================
+
+# Resume builder (private data + build artifacts)
+
+# =========================
+
+data/experience.json
+extract_pdf.py
+resume.pdf
+cover-letter.pdf
+resume*.png
+cover-letter*.png
